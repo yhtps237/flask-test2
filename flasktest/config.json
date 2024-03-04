@@ -1,0 +1,38 @@
+{
+    "database": {
+        "hostname": "localhost",
+        "port": 3306,
+        "username": "orion",
+        "password": "orion"
+    },
+    "host": "localhost",
+    "port": 3306,
+    "ssh_host": "192.168.40.42",
+    "ssh_port": 22,
+    "ssh_password": "OlDschool$#@!",
+    "ssh_username": "ramil",
+    "remote_bind_address_host": "127.0.0.1",
+    "remote_bind_address_port": 3306,
+    "ssh_e_jurnal_host": "94.20.43.43",
+    "ssh_e_jurnal_port": 2002,
+    "ssh_e_jurnal_username": "root",
+    "ssh_e_jurnal_password": "t%RbG6=3Hh",
+    "users": {
+        "super-user": {
+            "username": "super-user",
+            "password": "iQ^88W^@rJZ}8%t"
+        },
+        "admin-user": {
+            "username": "admin",
+            "password": "D_8^{~v(Sfz]wOX"
+        },
+        "tutor": {
+            "username": "tutor",
+            "password": "]~41%t!D=qo[WB1"
+        },
+        "student": {
+            "username": "student",
+            "password": "JhjZl;bN}1~SMQQ"
+        }
+    }
+}
