@@ -1,16 +1,45 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% for post in posts %}
-<article class="media content-section">
-    <div class="media-body">
-        <div class="article-metadata">
-            <a class="mr-2" href="#">{{ post.author }}</a>
-            <small class="text-muted">{{ post.date_posted }}</small>
-        </div>
-        <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
-        <p class="article-content">{{ post.content }}</p>
+<div class="card-body">
+    <legend><h3>Kontingent Tələbələr</h3></legend>
+    <div class="table-responsive">
+        <table class="display table table-striped "
+            id="zero_configuration_table" style="width:100%">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Fakültə adı</th>
+                    <th scope="col">İxtisas adı</th>
+                    <th scope="col">Kurs</th>
+                    <th scope="col">Tələbə ad</th>
+                    <th scope="col">Kateqori</th>
+                    <th scope="col">Tarix</th>
+                    <th scope="col">Qeyd</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in results %}
+                <tr>
+                    <td></td>
+                    <th scope="row">{{row[0]}}</th>
+                    <td>{{row[1]}}</td>
+                    <td>{{row[2]}}</td>
+                    <td>{{row[3]}}</td>
+                    <td>
+                        {% if row[4] %}
+                        {{row[4]}}
+                        {% else %}
+                        {{row[5]}}
+                        {% endif %}
+
+                    </td>
+                    <td>{{row[6]}}</td>
+                    <td>{{row[7]}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-</article>
-{% endfor %}
+</div>
 {% endblock content %}

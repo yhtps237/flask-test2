@@ -1,10 +1,13 @@
 from flask import Flask, render_template, url_for, request, flash, redirect
-from flasktest.forms import RegistrationForm, LoginForm
+from flasktest.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from flasktest.models import User, Post
 from flasktest.database import database
 from flasktest import app, db
 from flasktest import bcrypt
 from flask_login import login_user, login_required, current_user, logout_user
+from PIL import Image
+import secrets
+import os
 
 
 posts = [
@@ -27,7 +30,19 @@ posts = [
 @app.route("/home")
 @login_required
 def index():
-    return render_template("home.html", posts=posts)
+    database.connect()
+    query = """SELECT faculty_name, profession_name, course, student_id,
+                ci.category_name, cg.category_name, goners_action, date, note
+                FROM examsystem.contingent_movements AS cm
+                JOIN examsystem.faculty_names AS fn ON fn.id=cm.faculty_id
+                JOIN examsystem.professions AS pn ON pn.id=cm.profession_id
+                LEFT JOIN examsystem.contingent_incomers AS ci ON ci.id=cm.incomers_action
+                LEFT JOIN examsystem.contingent_goners AS cg ON cg.id=cm.goners_action
+
+            """
+    results = database.execute(query)
+    database.disconnect()
+    return render_template("home.html", results=results)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -39,16 +54,16 @@ def login():
     if form.validate_on_submit():
         password = form.password.data
 
-        # database.connect()
-        # query = """SELECT * FROM examsystem.users"""
-        # result = database.execute(query)
-        # database.disconnect()
-
         user = User.query.filter_by(email=form.email.data).first()
 
         if user and bcrypt.check_password_hash(user.password, password):
             flash(f"You have been logged in!", category="success")
             login_user(user, remember=form.remember.data)
+
+            next_page = request.args.get("next")
+            if next_page:
+                return redirect(next_page)
+
             return redirect(url_for("index"))
         else:
             flash(
@@ -60,12 +75,14 @@ def login():
 
 
 @app.route("/logout")
+@login_required
 def logout():
     logout_user()
     return redirect(url_for("login"))
 
 
 @app.route("/register", methods=["GET", "POST"])
+@login_required
 def register():
     if current_user.is_authenticated:
         return redirect(url_for("index"))
@@ -88,5 +105,45 @@ def register():
 
 
 @app.route("/about")
+@login_required
 def about():
     return render_template("about.html", title="About")
+
+
+def save_picture(form_picture):
+    hex = secrets.token_hex(8)
+    _, file_ext = os.path.splitext(form_picture.filename)
+    picture_fn = hex + file_ext
+    full_path = os.path.join(app.root_path, "static/profile_pics", picture_fn)
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+
+    i.save(full_path)
+
+    return picture_fn
+
+
+@app.route("/account", methods=["GET", "POST"])
+@login_required
+def account():
+    username = current_user.username
+    image_file = url_for("static", filename="profile_pics/" + current_user.image)
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        if form.image.data:
+            picture_file = save_picture(form.image.data)
+            current_user.image = picture_file
+
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        db.session.commit()
+        flash("Your account has been updated!", "success")
+        return redirect(url_for("account"))
+    elif request.method == "GET":
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+
+    return render_template(
+        "account.html", title=f"Account {username}", image_file=image_file, form=form
+    )
