@@ -2,27 +2,25 @@
 
 {% block content %}
 <div class="card-body">
-    <legend><h3>Kontingent Tələbələr</h3></legend>
+    <legend><h3>Kontingent Tələbə hərəkatı</h3></legend>
     <div class="table-responsive">
         <table class="display table table-striped "
             id="zero_configuration_table" style="width:100%">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
                     <th scope="col">Fakültə adı</th>
                     <th scope="col">İxtisas adı</th>
                     <th scope="col">Kurs</th>
                     <th scope="col">Tələbə ad</th>
                     <th scope="col">Kateqori</th>
                     <th scope="col">Tarix</th>
-                    <th scope="col">Qeyd</th>
+                    <th scope="col">Əmr</th>
                 </tr>
             </thead>
             <tbody>
                 {% for row in results %}
                 <tr>
-                    <td></td>
-                    <th scope="row">{{row[0]}}</th>
+                    <th>{{row[0]}}</th>
                     <td>{{row[1]}}</td>
                     <td>{{row[2]}}</td>
                     <td>{{row[3]}}</td>
@@ -34,8 +32,8 @@
                         {% endif %}
 
                     </td>
-                    <td>{{row[6]}}</td>
                     <td>{{row[7]}}</td>
+                    <td>{{row[8]}}</td>
                 </tr>
                 {% endfor %}
             </tbody>

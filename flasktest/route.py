@@ -1,7 +1,7 @@
 from flask import Flask, render_template, url_for, request, flash, redirect
 from flasktest.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from flasktest.models import User, Post
-from flasktest.database import database
+from flasktest.database import database, connect_db, disconnect_db
 from flasktest import app, db
 from flasktest import bcrypt
 from flask_login import login_user, login_required, current_user, logout_user
@@ -30,18 +30,20 @@ posts = [
 @app.route("/home")
 @login_required
 def index():
-    database.connect()
-    query = """SELECT faculty_name, profession_name, course, student_id,
-                ci.category_name, cg.category_name, goners_action, date, note
-                FROM examsystem.contingent_movements AS cm
-                JOIN examsystem.faculty_names AS fn ON fn.id=cm.faculty_id
-                JOIN examsystem.professions AS pn ON pn.id=cm.profession_id
-                LEFT JOIN examsystem.contingent_incomers AS ci ON ci.id=cm.incomers_action
-                LEFT JOIN examsystem.contingent_goners AS cg ON cg.id=cm.goners_action
-
-            """
-    results = database.execute(query)
-    database.disconnect()
+    connection = connect_db(database)
+    with connection.cursor() as cursor:
+        query = """SELECT faculty_name, profession_name, course, student_name,
+                    ci.category_name, cg.category_name, goners_action, date, commandment_number,
+                    pdf_file
+                    FROM examsystem.contingent_movements AS cm
+                    JOIN examsystem.faculty_names AS fn ON fn.id=cm.faculty_id
+                    JOIN examsystem.professions AS pn ON pn.id=cm.profession_id
+                    LEFT JOIN examsystem.contingent_incomers AS ci ON ci.id=cm.incomers_action
+                    LEFT JOIN examsystem.contingent_goners AS cg ON cg.id=cm.goners_action
+                """
+        cursor.execute(query)
+        results = cursor.fetchall()
+    disconnect_db(connection, database)
     return render_template("home.html", results=results)
 
 
