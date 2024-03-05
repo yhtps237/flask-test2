@@ -6,6 +6,8 @@ from flasktest import app, db
 from flasktest import bcrypt
 from flask_login import login_user, login_required, current_user, logout_user
 from PIL import Image
+from flask import send_file
+import requests
 import secrets
 import os
 
@@ -26,10 +28,19 @@ posts = [
 ]
 
 
-@app.route("/")
-@app.route("/home")
+@app.route("/", methods=["GET", "POST"])
+@app.route("/home", methods=["GET", "POST"])
 @login_required
 def index():
+    if request.method == "POST":
+        commandment_number = request.form["number"]
+        r = requests.get(
+            f"https://api.ndu.edu.az/download-contingent-file?commandment_number={commandment_number}"
+        )
+
+        return send_file(r.content)
+        # return redirect(url_for("index"))
+
     connection = connect_db(database)
     with connection.cursor() as cursor:
         query = """SELECT faculty_name, profession_name, course, student_name,
