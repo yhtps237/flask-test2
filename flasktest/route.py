@@ -10,7 +10,7 @@ from flask import send_file
 import requests
 import secrets
 import os
-
+import io
 
 posts = [
     {
@@ -37,8 +37,15 @@ def index():
         r = requests.get(
             f"https://api.ndu.edu.az/download-contingent-file?commandment_number={commandment_number}"
         )
+        with open("asdf.pdf", "wb") as f:
+            f.write(r.content)
 
-        return send_file(r.content)
+        return send_file(
+            io.BytesIO(r.content),
+            # as_attachment=True,
+            # download_name="image.jpg",
+            mimetype="application/pdf",
+        )
         # return redirect(url_for("index"))
 
     connection = connect_db(database)
