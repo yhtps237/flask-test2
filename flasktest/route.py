@@ -1,5 +1,11 @@
+import datetime
 from flask import Flask, render_template, url_for, request, flash, redirect
-from flasktest.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from flasktest.forms import (
+    RegistrationForm,
+    LoginForm,
+    UpdateAccountForm,
+    ContingentForm,
+)
 from flasktest.models import User, Post
 from flasktest.database import database, connect_db, disconnect_db
 from flasktest import app, db
@@ -112,6 +118,54 @@ def register():
 @login_required
 def about():
     return render_template("about.html", title="About")
+
+
+@app.route("/contingent", methods=["GET", "POST"])
+@login_required
+def contingent():
+    form = ContingentForm()
+
+    # ---------------------------------------------------------
+    connection = connect_db(database)
+    with connection.cursor() as cursor:
+        query = """SELECT id, faculty_name from examsystem.faculty_names;
+                """
+        cursor.execute(query)
+        faculty_names = cursor.fetchall()
+
+        query = """SELECT id, year_name from examsystem.years;
+                """
+        cursor.execute(query)
+        years = cursor.fetchall()
+
+    disconnect_db(connection, database)
+    form.faculty_name.choices = faculty_names
+    form.eduyear.choices = years
+    form.semestr.choices = [("1", "PAYIZ"), ("2", "YAZ")]
+    # ---------------------------------------------------------
+    current_year = datetime.datetime.now().year
+    form.year.choices = [
+        (f"{index}", f"{year}")
+        for index, year in enumerate(range(2024, current_year + 1))
+    ]
+    form.month.choices = [
+        ("1", "Yanvar"),
+        ("2", "Fevral"),
+        ("3", "Mart"),
+        ("4", "Aprel"),
+        ("5", "May"),
+        ("6", "İyun"),
+        ("7", "İyul"),
+        ("8", "Avqust"),
+        ("9", "Sentyabr"),
+        ("10", "Oktyabr"),
+        ("11", "Noyabr"),
+        ("12", "Dekabr"),
+    ]
+    if request.method == "POST":
+        if form.validate_on_submit():
+            return redirect(url_for("index"))
+    return render_template("contingent.html", title="contingent", form=form)
 
 
 def save_picture(form_picture):
