@@ -1,0 +1,310 @@
+{
+    "columns": [
+        {
+            "key": "A7",
+            "range": "A7:A16",
+            "text": "Kurs",
+            "kwargs": {
+                "textRotation": 90
+            }
+        },
+        {
+            "key": "B7",
+            "range": "B7:B16",
+            "text": "Təhsil forması",
+            "kwargs": {
+                "textRotation": 90
+            }
+        },
+        {
+            "key": "C7",
+            "range": "C7:C16",
+            "text": "Hesabat ayinin əvvəlinə olan tələbə sayı",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "D7",
+            "range": "D7:L9",
+            "text": "Gəlmişdir",
+            "kwargs": {}
+        },
+        {
+            "key": "M7",
+            "range": "M7:AB9",
+            "text": "Getmişdir",
+            "kwargs": {}
+        },
+        {
+            "key": "AC7",
+            "range": "AC7:AC16",
+            "text": "Hesabat ayinin sonuna olan tələbə sayi",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "AD7",
+            "range": "AD7:AE9",
+            "text": "Cins etibarilə yekun",
+            "kwargs": {
+                "wrapText": true
+            }
+        },
+        {
+            "key": "AD10",
+            "range": "AD10:AD16",
+            "text": "Kişi",
+            "kwargs": {
+                "textRotation": 90
+            }
+        },
+        {
+            "key": "AE10",
+            "range": "AE10:AE16",
+            "text": "Qadın",
+            "kwargs": {
+                "textRotation": 90
+            }
+        },
+        {
+            "key": "AF7",
+            "range": "AF7:AF16",
+            "text": "Ak.məz. Olan tələbələrin sayi (cəmi daxil deyil)",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        }
+    ],
+    "sub_columns": [
+        {
+            "key": "D10",
+            "range": "D10:D16",
+            "text": "Qəbul olunmuş",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "E10",
+            "range": "E10:E16",
+            "text": "Bərpa edilmiş",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "F10",
+            "range": "F10:F16",
+            "text": "Başqa ali məktəbdən köçürülmüş",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "G10",
+            "range": "G10:G16",
+            "text": "Akademik məzuniyyətdən qayitmiş",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "H10",
+            "range": "H10:H16",
+            "text": "Başqa fakültədən köçürülmüş",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "I10",
+            "range": "I10:I16",
+            "text": "Qiyabidən",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "J10",
+            "range": "J10:J16",
+            "text": "Yda-dan keçmədiyindən normativdən artiq təhsil alanə",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "K10",
+            "range": "K10:K16",
+            "text": "İxtisas dəyişmə",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "L10",
+            "range": "L10:L16",
+            "text": "Cəmi",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "M10",
+            "range": "M10:M16",
+            "text": "Səhhəti ilə əlaqədar ak.məz.",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "N10",
+            "range": "N10:N16",
+            "text": "Hərbi xidmətdə olduğundan ak.məz.",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "O10",
+            "range": "O10:O16",
+            "text": "Sosial məzuniyyət",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "P10",
+            "range": "P10:P16",
+            "text": "Ailə vəz ilə əlaqədar ak.məz.",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "Q10",
+            "range": "Q10:Q16",
+            "text": "Tələbə mobilliyi",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "R10",
+            "range": "R10:R16",
+            "text": "İntizami pozma",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "S10",
+            "range": "S10:S16",
+            "text": "Yda-dan keçməmiş və universiteti bitirməmiş kimi",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "T10",
+            "range": "T10:T16",
+            "text": "Vefat etmiş",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "U10",
+            "range": "U10:U16",
+            "text": "Başqa ali məktəbə köçürülmüş",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "V10",
+            "range": "V10:V16",
+            "text": "Başqa fakültəyə köçürülmüş",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "W10",
+            "range": "W10:W16",
+            "text": "Öz ərizəsi əsasında",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "X10",
+            "range": "X10:X16",
+            "text": "İxtisas dəyişmə",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "Y10",
+            "range": "Y10:Y16",
+            "text": "Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "Z10",
+            "range": "Z10:Z16",
+            "text": "Bitirmiş və dövlət imtahanlarini vermişdir",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "AA10",
+            "range": "AA10:AA16",
+            "text": "Qiyabiyə",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "key": "AB10",
+            "range": "AB10:AB16",
+            "text": "Cəmi",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        }
+    ]
+}

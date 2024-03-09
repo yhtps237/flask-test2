@@ -12,21 +12,6 @@ import secrets
 import os
 import io
 
-posts = [
-    {
-        "author": "Ramil Salayev",
-        "title": "Post 1",
-        "content": "First post",
-        "date_posted": "2024-03-03",
-    },
-    {
-        "author": "Ramil Salayev",
-        "title": "Post 2",
-        "content": "Second post",
-        "date_posted": "2024-03-03",
-    },
-]
-
 
 @app.route("/", methods=["GET", "POST"])
 @app.route("/home", methods=["GET", "POST"])
@@ -67,7 +52,6 @@ def index():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    print(current_user)
     if current_user.is_authenticated:
         return redirect(url_for("index"))
     form = LoginForm()
