@@ -2,37 +2,23 @@
 {% block content %}
 
 <div class="content-section">
-    <form method="POST" action>
+    <form method="POST">
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
             <div class="form-group">
                 {{form.faculty_name.label(class="form-control-label")}}
-                {% if form.faculty_name.errors %}
+                {{form.faculty_name(**{"class": "form-control", "hx-get":
+                "/get_professions", "hx-target": "#profession_name"} )}}
+            </div>
 
-                {{form.faculty_name(class="form-control is-invalid")}}
-                <div class="invalid-feedback">
-                    {% for error in form.faculty_name.errors %}
-                    <span>{{error}}</span>
-                    {% endfor %}
-                </div>
-                {% else %}
-                {{form.faculty_name(class="form-control ")}}
-                {% endif %}
+            <div class="form-group">
+                {{form.profession_name.label(class="form-control-label")}}
+                {{form.profession_name(class="form-control")}}
             </div>
 
             <div class="form-group">
                 {{form.eduyear.label(class="form-control-label")}}
-                {% if form.eduyear.errors %}
-
-                {{form.eduyear(class="form-control  is-invalid")}}
-                <div class="invalid-feedback">
-                    {% for error in form.eduyear.errors %}
-                    <span>{{error}}</span>
-                    {% endfor %}
-                </div>
-                {% else %}
                 {{form.eduyear(class="form-control ")}}
-                {% endif %}
             </div>
 
             <div class="form-group">
@@ -69,7 +55,7 @@
                 {{form.end_date.label(class="form-control-label")}}
                 {% if form.end_date.errors %}
 
-                {{form.end_date(class="form-control  is-invalid")}}
+                {{form.end_date(class="form-control is-invalid")}}
                 <div class="invalid-feedback">
                     {% for error in form.end_date.errors %}
                     <span>{{error}}</span>
@@ -78,6 +64,17 @@
                 {% else %}
                 {{form.end_date(class="form-control ")}}
                 {% endif %}
+            </div>
+
+            <div class="form-group">
+
+                {% for subfield in form.radio %}
+                <div class="form-check">
+                    {{ subfield(class="form-check-input") }}
+                    {{ subfield.label(class="form-check-label") }}
+                </div>
+                {% endfor %}
+
             </div>
 
         </fieldset>

@@ -8,6 +8,7 @@ from wtforms import (
     ValidationError,
     SelectField,
     DateField,
+    RadioField,
 )
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from flasktest.models import User
@@ -59,13 +60,18 @@ class UpdateAccountForm(FlaskForm):
 
 class ContingentForm(FlaskForm):
     faculty_name = SelectField("Fakültə Adı", validators=[DataRequired()])
+    profession_name = SelectField("İxtisas Adı", coerce=int)
     eduyear = SelectField("Tədris ili", validators=[DataRequired()])
     semestr = SelectField("Semestr", validators=[DataRequired()])
-    year = SelectField("İl", validators=[DataRequired()])
-    month = SelectField("Ay", validators=[DataRequired()])
 
     start_date = DateField("Başlama tarixi", validators=[DataRequired()])
     end_date = DateField("Bitmə tarixi", validators=[DataRequired()])
+    radio = RadioField(
+        "Label",
+        choices=[("1", "Əyani"), ("2", "Qiyabi"), ("3", "ƏAT")],
+        validators=[DataRequired()],
+    )
+
     submit = SubmitField("Export")
 
 

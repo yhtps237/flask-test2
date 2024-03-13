@@ -17,6 +17,7 @@ import requests
 import secrets
 import os
 import io
+from flasktest.modules.module import Contingent
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -120,51 +121,97 @@ def about():
     return render_template("about.html", title="About")
 
 
+@app.route("/get_professions")
+@login_required
+def get_professions():
+    faculty_id = request.args.get("faculty_name", type=int)
+    connection = connect_db(database)
+    with connection.cursor() as cursor:
+        query = f"""
+                    SELECT 
+                        pr.id, concat(pr.profession_name, " | ", sector_name)
+                    FROM 
+                        examsystem.professions as pr
+                    JOIN
+                        examsystem.sectors as s
+                    ON
+                        s.id=pr.sectors
+                    WHERE 
+                        faculty_id={faculty_id};
+                """
+        cursor.execute(query)
+        profession_names = cursor.fetchall()
+
+        profession_names.insert(0, (0, "---"))
+    disconnect_db(connection, database)
+    return render_template("professions.html", profession_names=profession_names)
+
+
 @app.route("/contingent", methods=["GET", "POST"])
 @login_required
-def contingent():
+def contingent_vew():
     form = ContingentForm()
 
     # ---------------------------------------------------------
     connection = connect_db(database)
+    faculty_id = 2
+    if request.method == "POST":
+        faculty_id = form.faculty_name.data
+
     with connection.cursor() as cursor:
         query = """SELECT id, faculty_name from examsystem.faculty_names;
                 """
         cursor.execute(query)
         faculty_names = cursor.fetchall()
 
-        query = """SELECT id, year_name from examsystem.years;
+        query = f"""
+                    SELECT 
+                        pr.id, concat(pr.profession_name, " | ", sector_name)
+                    FROM 
+                        examsystem.professions as pr
+                    JOIN
+                        examsystem.sectors as s
+                    ON
+                        s.id=pr.sectors
+                    WHERE 
+                        faculty_id={faculty_id}
+                """
+        cursor.execute(query)
+        profession_names = cursor.fetchall()
+
+        query = """SELECT year_name, year_name from examsystem.years;
                 """
         cursor.execute(query)
         years = cursor.fetchall()
 
     disconnect_db(connection, database)
     form.faculty_name.choices = faculty_names
+    profession_names.insert(0, (0, "---"))
+    print(profession_names)
+    form.profession_name.choices = profession_names
+
     form.eduyear.choices = years
-    form.semestr.choices = [("1", "PAYIZ"), ("2", "YAZ")]
+    form.semestr.choices = [("PAYIZ", "PAYIZ"), ("YAZ", "YAZ")]
     # ---------------------------------------------------------
     current_year = datetime.datetime.now().year
-    form.year.choices = [
-        (f"{index}", f"{year}")
-        for index, year in enumerate(range(2024, current_year + 1))
-    ]
-    form.month.choices = [
-        ("1", "Yanvar"),
-        ("2", "Fevral"),
-        ("3", "Mart"),
-        ("4", "Aprel"),
-        ("5", "May"),
-        ("6", "İyun"),
-        ("7", "İyul"),
-        ("8", "Avqust"),
-        ("9", "Sentyabr"),
-        ("10", "Oktyabr"),
-        ("11", "Noyabr"),
-        ("12", "Dekabr"),
-    ]
+
     if request.method == "POST":
         if form.validate_on_submit():
-            return redirect(url_for("index"))
+            faculty_id = form.faculty_name.data
+            profession_id = form.profession_name.data
+            edu = form.eduyear.data
+            sm = form.semestr.data
+            start_date = form.start_date.data
+            end_date = form.end_date.data
+            radio = form.radio.data
+            contingent = Contingent(
+                edu, sm, faculty_id, profession_id, start_date, end_date, radio
+            )
+            contingent.save(f"{start_date}-{end_date}-{radio}")
+            # return redirect(url_for("index"))
+            return redirect(request.url)
+        else:
+            print(form.errors)
     return render_template("contingent.html", title="contingent", form=form)
 
 

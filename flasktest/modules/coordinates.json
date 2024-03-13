@@ -82,6 +82,7 @@
     ],
     "sub_columns": [
         {
+            "letter": "D",
             "key": "D10",
             "range": "D10:D16",
             "text": "Qəbul olunmuş",
@@ -91,6 +92,7 @@
             }
         },
         {
+            "letter": "E",
             "key": "E10",
             "range": "E10:E16",
             "text": "Bərpa edilmiş",
@@ -100,6 +102,7 @@
             }
         },
         {
+            "letter": "F",
             "key": "F10",
             "range": "F10:F16",
             "text": "Başqa ali məktəbdən köçürülmüş",
@@ -109,6 +112,7 @@
             }
         },
         {
+            "letter": "G",
             "key": "G10",
             "range": "G10:G16",
             "text": "Akademik məzuniyyətdən qayitmiş",
@@ -118,6 +122,7 @@
             }
         },
         {
+            "letter": "H",
             "key": "H10",
             "range": "H10:H16",
             "text": "Başqa fakültədən köçürülmüş",
@@ -127,6 +132,7 @@
             }
         },
         {
+            "letter": "I",
             "key": "I10",
             "range": "I10:I16",
             "text": "Qiyabidən",
@@ -136,6 +142,7 @@
             }
         },
         {
+            "letter": "J",
             "key": "J10",
             "range": "J10:J16",
             "text": "Yda-dan keçmədiyindən normativdən artiq təhsil alanə",
@@ -145,6 +152,7 @@
             }
         },
         {
+            "letter": "K",
             "key": "K10",
             "range": "K10:K16",
             "text": "İxtisas dəyişmə",
@@ -154,6 +162,7 @@
             }
         },
         {
+            "letter": "L",
             "key": "L10",
             "range": "L10:L16",
             "text": "Cəmi",
@@ -163,6 +172,7 @@
             }
         },
         {
+            "letter": "M",
             "key": "M10",
             "range": "M10:M16",
             "text": "Səhhəti ilə əlaqədar ak.məz.",
@@ -172,6 +182,7 @@
             }
         },
         {
+            "letter": "N",
             "key": "N10",
             "range": "N10:N16",
             "text": "Hərbi xidmətdə olduğundan ak.məz.",
@@ -181,6 +192,7 @@
             }
         },
         {
+            "letter": "O",
             "key": "O10",
             "range": "O10:O16",
             "text": "Sosial məzuniyyət",
@@ -190,6 +202,7 @@
             }
         },
         {
+            "letter": "P",
             "key": "P10",
             "range": "P10:P16",
             "text": "Ailə vəz ilə əlaqədar ak.məz.",
@@ -199,6 +212,7 @@
             }
         },
         {
+            "letter": "Q",
             "key": "Q10",
             "range": "Q10:Q16",
             "text": "Tələbə mobilliyi",
@@ -208,6 +222,7 @@
             }
         },
         {
+            "letter": "R",
             "key": "R10",
             "range": "R10:R16",
             "text": "İntizami pozma",
@@ -217,6 +232,7 @@
             }
         },
         {
+            "letter": "S",
             "key": "S10",
             "range": "S10:S16",
             "text": "Yda-dan keçməmiş və universiteti bitirməmiş kimi",
@@ -226,6 +242,7 @@
             }
         },
         {
+            "letter": "T",
             "key": "T10",
             "range": "T10:T16",
             "text": "Vefat etmiş",
@@ -235,6 +252,7 @@
             }
         },
         {
+            "letter": "U",
             "key": "U10",
             "range": "U10:U16",
             "text": "Başqa ali məktəbə köçürülmüş",
@@ -244,6 +262,7 @@
             }
         },
         {
+            "letter": "V",
             "key": "V10",
             "range": "V10:V16",
             "text": "Başqa fakültəyə köçürülmüş",
@@ -253,6 +272,7 @@
             }
         },
         {
+            "letter": "W",
             "key": "W10",
             "range": "W10:W16",
             "text": "Öz ərizəsi əsasında",
@@ -262,6 +282,7 @@
             }
         },
         {
+            "letter": "X",
             "key": "X10",
             "range": "X10:X16",
             "text": "İxtisas dəyişmə",
@@ -271,6 +292,7 @@
             }
         },
         {
+            "letter": "Y",
             "key": "Y10",
             "range": "Y10:Y16",
             "text": "Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş",
@@ -280,6 +302,7 @@
             }
         },
         {
+            "letter": "Z",
             "key": "Z10",
             "range": "Z10:Z16",
             "text": "Bitirmiş və dövlət imtahanlarini vermişdir",
@@ -289,6 +312,7 @@
             }
         },
         {
+            "letter": "AA",
             "key": "AA10",
             "range": "AA10:AA16",
             "text": "Qiyabiyə",
@@ -298,6 +322,7 @@
             }
         },
         {
+            "letter": "AB",
             "key": "AB10",
             "range": "AB10:AB16",
             "text": "Cəmi",

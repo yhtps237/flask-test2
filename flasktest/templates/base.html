@@ -71,7 +71,7 @@
                                     <div class="dropdown-menu"
                                         aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item"
-                                            href="{{url_for('contingent')}}">Kontingent</a>
+                                            href="{{url_for('contingent_vew')}}">Kontingent</a>
                                         <!-- <a class="dropdown-item"
                                             href="#">Another
                                             action</a>
@@ -119,30 +119,11 @@
                     {% endwith %}
                     {% block content %}{% endblock %}
                 </div>
-                <!-- <div class="col-md-4">
-                    <div class="content-section">
-                        <h3>Our Sidebar</h3>
-                        <p class='text-muted'>You can put any information here
-                            you'd like.
-                            <ul class="list-group">
-                                <li
-                                    class="list-group-item list-group-item-light">Latest
-                                    Posts</li>
-                                <li
-                                    class="list-group-item list-group-item-light">Announcements</li>
-                                <li
-                                    class="list-group-item list-group-item-light">Calendars</li>
-                                <li
-                                    class="list-group-item list-group-item-light">etc</li>
-                            </ul>
-                        </p>
-                    </div>
-                </div> -->
             </div>
         </main>
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-
+        <script src="https://unpkg.com/htmx.org@1.9.10"></script>
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
             integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
             crossorigin="anonymous"></script>
