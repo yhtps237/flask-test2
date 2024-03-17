@@ -6,7 +6,7 @@ from flasktest.forms import (
     UpdateAccountForm,
     ContingentForm,
 )
-from flasktest.models import User, Post
+from flasktest.models import User
 from flasktest.database import database, connect_db, disconnect_db
 from flasktest import app, db
 from flasktest import bcrypt
@@ -17,7 +17,7 @@ import requests
 import secrets
 import os
 import io
-from flasktest.modules.module import Contingent
+from flasktest.modules.module import Contingent, MovementReport
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -29,22 +29,17 @@ def index():
         r = requests.get(
             f"https://api.ndu.edu.az/download-contingent-file?commandment_id={contingent_id}"
         )
-        with open("asdf.pdf", "wb") as f:
-            f.write(r.content)
 
         return send_file(
             io.BytesIO(r.content),
-            # as_attachment=True,
-            # download_name="image.jpg",
             mimetype="application/pdf",
         )
-        # return redirect(url_for("index"))
 
     connection = connect_db(database)
     with connection.cursor() as cursor:
         query = """SELECT faculty_name, profession_name, course, student_name,
                     ci.category_name, cg.category_name, date, commandment_number,
-                    pdf_file, cm.id
+                    pdf_file, cm.id, cm.faculty_id
                     FROM examsystem.contingent_movements AS cm
                     JOIN examsystem.faculty_names AS fn ON fn.id=cm.faculty_id
                     JOIN examsystem.professions AS pn ON pn.id=cm.profession_id
@@ -54,6 +49,18 @@ def index():
         cursor.execute(query)
         results = cursor.fetchall()
     disconnect_db(connection, database)
+
+    if request.args.get("export") == "True":
+        report_obj = MovementReport(results, current_user.faculty_id)
+
+        report_obj.save("report")
+        return send_file(
+            "../excel-files/report.xlsx",
+            as_attachment=True,
+            download_name="report.xlsx",
+            mimetype="application/excel",
+        )
+
     return render_template("home.html", results=results)
 
 
@@ -95,15 +102,33 @@ def logout():
 @app.route("/register", methods=["GET", "POST"])
 @login_required
 def register():
-    if current_user.is_authenticated:
+    if current_user.faculty_id != 0:
         return redirect(url_for("index"))
     form = RegistrationForm()
+
+    connection = connect_db(database)
+    with connection.cursor() as cursor:
+        query = """SELECT id, faculty_name from examsystem.faculty_names;
+                """
+        cursor.execute(query)
+        faculty_names = cursor.fetchall()
+        faculty_names.insert(0, (0, "---"))
+
+    disconnect_db(connection, database)
+    form.faculty_name.choices = faculty_names
+
     if form.validate_on_submit():
         username = form.username.data
         email = form.email.data
         password = form.password.data
         hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
-        user = User(username=username, email=email, password=hashed_password)
+        faculty_id = form.faculty_name.data
+        user = User(
+            username=username,
+            email=email,
+            password=hashed_password,
+            faculty_id=faculty_id,
+        )
         db.session.add(user)
         db.session.commit()
 
@@ -112,6 +137,7 @@ def register():
             category="success",
         )
         return redirect(url_for("login"))
+
     return render_template("register.html", form=form)
 
 
@@ -159,10 +185,18 @@ def contingent_vew():
         faculty_id = form.faculty_name.data
 
     with connection.cursor() as cursor:
-        query = """SELECT id, faculty_name from examsystem.faculty_names;
-                """
-        cursor.execute(query)
-        faculty_names = cursor.fetchall()
+        if current_user.faculty_id == 0:
+            query = """SELECT id, faculty_name from examsystem.faculty_names;
+                    """
+            cursor.execute(query)
+            faculty_names = cursor.fetchall()
+        else:
+            faculty_id = current_user.faculty_id
+            query = f"""SELECT id, faculty_name from examsystem.faculty_names
+                        where id={faculty_id};
+                    """
+            cursor.execute(query)
+            faculty_names = cursor.fetchall()
 
         query = f"""
                     SELECT 
@@ -187,7 +221,6 @@ def contingent_vew():
     disconnect_db(connection, database)
     form.faculty_name.choices = faculty_names
     profession_names.insert(0, (0, "---"))
-    print(profession_names)
     form.profession_name.choices = profession_names
 
     form.eduyear.choices = years

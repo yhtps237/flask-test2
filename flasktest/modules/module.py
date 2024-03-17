@@ -620,3 +620,37 @@ class Contingent:
 
         disconnect_db(connection, database)
         return result_dict, result_ak_mez
+
+
+class MovementReport:
+    def __init__(self, data, faculty_id) -> None:
+        self.faculty_id = faculty_id
+        self.data = self.filter_data(data)
+        self.workbook = openpyxl.Workbook()
+        self.ws = self.workbook.active
+        self.put_table()
+
+    def filter_data(self, data):
+        if self.faculty_id == 0:
+            return [i[:-3] for i in data]
+
+        data = [i[:-3] for i in data if i[10] == self.faculty_id]
+        return data
+
+    def put_table(self):
+        columns = [
+            "Fakültə adı",
+            "İxtisas adı",
+            "Kurs",
+            "Tələbə Ad",
+            "Gəlməşdir",
+            "Getmişdir",
+            "Tarix",
+            "Əmr nömrəsi",
+        ]
+        self.ws.append(columns)
+        for row in self.data:
+            self.ws.append(row)
+
+    def save(self, name):
+        self.workbook.save(f"excel-files/{name}.xlsx")
