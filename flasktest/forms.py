@@ -17,45 +17,46 @@ from flask_login import current_user
 
 class RegistrationForm(FlaskForm):
     username = StringField(
-        "Username", validators=[DataRequired(), Length(min=2, max=20)]
+        "İstifadəçi adı", validators=[DataRequired(), Length(min=2, max=20)]
     )
     email = StringField("Email", validators=[DataRequired(), Email()])
-    password = PasswordField("Password", validators=[DataRequired()])
+    password = PasswordField("Şifrə", validators=[DataRequired()])
     confirm_password = PasswordField(
-        "Confirm Password", validators=[DataRequired(), EqualTo("password")]
+        "Şifrənin təkrarı", validators=[DataRequired(), EqualTo("password")]
     )
-    submit = SubmitField("Sign up")
+    faculty_name = SelectField("Fakültə Adı")
+    submit = SubmitField("Qeydiyatdan keç")
 
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
         if user:
-            raise ValidationError("That username is already taken.")
+            raise ValidationError("Bu istifadəçi adı hal-hazırda istifadə olunur.")
 
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
         if user:
-            raise ValidationError("That email is already taken.")
+            raise ValidationError("Bu mail ünvanı hal-hazırda istifadə olunur.")
 
 
 class UpdateAccountForm(FlaskForm):
     username = StringField(
-        "Username", validators=[DataRequired(), Length(min=2, max=20)]
+        "İstifadəçi adı", validators=[DataRequired(), Length(min=2, max=20)]
     )
     email = StringField("Email", validators=[DataRequired(), Email()])
-    image = FileField("Profile Picture", validators=[FileAllowed(["jpg", "png"])])
-    submit = SubmitField("Update")
+    image = FileField("Profil Şəkli", validators=[FileAllowed(["jpg", "png"])])
+    submit = SubmitField("Yenilə")
 
     def validate_username(self, username):
         if current_user.username != username.data:
             user = User.query.filter_by(username=username.data).first()
             if user:
-                raise ValidationError("That username is already taken.")
+                raise ValidationError("Bu istifadəçi adı hal-hazırda istifadə olunur.")
 
     def validate_email(self, email):
         if current_user.email != email.data:
             user = User.query.filter_by(email=email.data).first()
             if user:
-                raise ValidationError("That email is already taken.")
+                raise ValidationError("Bu mail ünvanı hal-hazırda istifadə olunur.")
 
 
 class ContingentForm(FlaskForm):
@@ -72,11 +73,11 @@ class ContingentForm(FlaskForm):
         validators=[DataRequired()],
     )
 
-    submit = SubmitField("Export")
+    submit = SubmitField("Çap et")
 
 
 class LoginForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
-    password = PasswordField("Password", validators=[DataRequired()])
-    remember = BooleanField("Remember me")
-    submit = SubmitField("Login")
+    password = PasswordField("Şifrə", validators=[DataRequired()])
+    remember = BooleanField("Məni xatırla")
+    submit = SubmitField("Daxil ol")
