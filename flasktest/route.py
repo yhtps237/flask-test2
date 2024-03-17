@@ -25,9 +25,9 @@ from flasktest.modules.module import Contingent
 @login_required
 def index():
     if request.method == "POST":
-        commandment_number = request.form["number"]
+        contingent_id = request.form["number"]
         r = requests.get(
-            f"https://api.ndu.edu.az/download-contingent-file?commandment_number={commandment_number}"
+            f"https://api.ndu.edu.az/download-contingent-file?commandment_id={contingent_id}"
         )
         with open("asdf.pdf", "wb") as f:
             f.write(r.content)
@@ -43,8 +43,8 @@ def index():
     connection = connect_db(database)
     with connection.cursor() as cursor:
         query = """SELECT faculty_name, profession_name, course, student_name,
-                    ci.category_name, cg.category_name, goners_action, date, commandment_number,
-                    pdf_file
+                    ci.category_name, cg.category_name, date, commandment_number,
+                    pdf_file, cm.id
                     FROM examsystem.contingent_movements AS cm
                     JOIN examsystem.faculty_names AS fn ON fn.id=cm.faculty_id
                     JOIN examsystem.professions AS pn ON pn.id=cm.profession_id
