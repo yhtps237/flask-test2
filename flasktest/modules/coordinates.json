@@ -33,13 +33,13 @@
         },
         {
             "key": "M7",
-            "range": "M7:AB9",
+            "range": "M7:AC9",
             "text": "Getmişdir",
             "kwargs": {}
         },
         {
-            "key": "AC7",
-            "range": "AC7:AC16",
+            "key": "AD7",
+            "range": "AD7:AD16",
             "text": "Hesabat ayinin sonuna olan tələbə sayi",
             "kwargs": {
                 "textRotation": 90,
@@ -47,32 +47,32 @@
             }
         },
         {
-            "key": "AD7",
-            "range": "AD7:AE9",
+            "key": "AE7",
+            "range": "AE7:AF9",
             "text": "Cins etibarilə yekun",
             "kwargs": {
                 "wrapText": true
             }
         },
         {
-            "key": "AD10",
-            "range": "AD10:AD16",
+            "key": "AE10",
+            "range": "AE10:AE16",
             "text": "Kişi",
             "kwargs": {
                 "textRotation": 90
             }
         },
         {
-            "key": "AE10",
-            "range": "AE10:AE16",
+            "key": "AF10",
+            "range": "AF10:AF16",
             "text": "Qadın",
             "kwargs": {
                 "textRotation": 90
             }
         },
         {
-            "key": "AF7",
-            "range": "AF7:AF16",
+            "key": "AG7",
+            "range": "AG7:AG16",
             "text": "Ak.məz. Olan tələbələrin sayi (cəmi daxil deyil)",
             "kwargs": {
                 "textRotation": 90,
@@ -325,6 +325,16 @@
             "letter": "AB",
             "key": "AB10",
             "range": "AB10:AB16",
+            "text": "Sənədləri təqdim etmədiyi üçün (miqrasiya)",
+            "kwargs": {
+                "textRotation": 90,
+                "wrapText": true
+            }
+        },
+        {
+            "letter": "AC",
+            "key": "AC10",
+            "range": "AC10:AC16",
             "text": "Cəmi",
             "kwargs": {
                 "textRotation": 90,

@@ -241,8 +241,14 @@ def contingent_vew():
                 edu, sm, faculty_id, profession_id, start_date, end_date, radio
             )
             contingent.save(f"{start_date}-{end_date}-{radio}")
-            # return redirect(url_for("index"))
-            return redirect(request.url)
+
+            return send_file(
+                f"../excel-files/{start_date}-{end_date}-{radio}.xlsx",
+                as_attachment=True,
+                download_name=f"{start_date}-{end_date}-{radio}.xlsx",
+                mimetype="application/excel",
+            )
+            # return redirect(request.url)
         else:
             print(form.errors)
     return render_template("contingent.html", title="contingent", form=form)
