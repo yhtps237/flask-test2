@@ -150,9 +150,9 @@ class Contingent:
 
         start = 17
         for i in result_dict:
-            print(result_dict[i])
-            print(result_dict2[i])
-            print(ak_mez[i])
+            # print(result_dict[i])
+            # print(result_dict2[i])
+            # print(ak_mez[i])
             self.create_course(i, result_dict[i], result_dict2[i], ak_mez[i], start, 0)
             start += 4
 
@@ -300,7 +300,7 @@ class Contingent:
                 else:
                     row = None
 
-                print(self.ws[f"A{row}"].value, converter[course])
+                # print(self.ws[f"A{row}"].value, converter[course])
 
                 column = data[category][course]
                 odenisli = column["odenisli"]
@@ -434,7 +434,6 @@ class Contingent:
                             educationYear = '{self.edu}'
                                 AND semestr = '{self.sm}'
                                 {self.get_with_profession} AND std.profession_id={self.profession_id}
-                                AND foreign_student = FALSE
                                 AND pr.sectors={self.radio}
                                 AND (cm.date>="{self.edate}" OR cm.date is Null)
                                 OR (cm.date <= '{self.sdate}'
@@ -444,7 +443,7 @@ class Contingent:
                         GROUP BY course , `o/d`
                         ORDER BY course, `o/d` desc;
                     """
-            print(query)
+            # print(query)
             cursor.execute(query)
             result = cursor.fetchall()
 
@@ -566,7 +565,7 @@ class Contingent:
                         GROUP BY course , `o/d`
                         ORDER BY course , `o/d` DESC;
                     """
-            print(query)
+            # print(query)
             cursor.execute(query)
             result = cursor.fetchall()
 
