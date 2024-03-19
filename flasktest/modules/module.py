@@ -25,12 +25,12 @@ class Contingent:
         self.ws = self.workbook.active
         # Naxçıvan Dövlət Universitetinin  _əyani___ şöbəsinin
         #   _Pedaqoji_fakültəsi  üzrə təhsil alan tələbə kontingentinin dəyişməsi haqqında
-        self.merge_cells("A1:AF1")
+        self.merge_cells("A1:AG1")
         self.ws[f"A1"].value = "Naxçıvan Dövlət Universitetinin əyani şöbəsinin"
         self.ws[f"A1"].alignment = Alignment(horizontal="center", vertical="center")
         self.ws[f"A1"].font = Font(bold=True)
 
-        self.merge_cells("A2:AF2")
+        self.merge_cells("A2:AG2")
         faculty_name = self._get_faculty_name(self.faculty_id)
         self.ws[f"A2"].value = (
             f"{faculty_name} fakültəsi üzrə təhsil alan tələbə kontingentinin dəyişməsi haqqında"
@@ -38,12 +38,12 @@ class Contingent:
         self.ws[f"A2"].alignment = Alignment(horizontal="center", vertical="center")
         self.ws[f"A2"].font = Font(bold=True)
 
-        self.merge_cells("AD4:AF4")
+        self.merge_cells("AD4:AG4")
         self.ws[f"AD4"].value = f"{self.sdate} - {self.edate}"
         self.ws[f"AD4"].alignment = Alignment(horizontal="right", vertical="center")
         self.ws[f"AD4"].font = Font(bold=True)
 
-        self.merge_cells("A6:AF6")
+        self.merge_cells("A6:AG6")
         if self.profession_id:
             text = self._get_profession_name(self.profession_id)
         else:
@@ -221,16 +221,16 @@ class Contingent:
                 key2 = "xarici_odenisli_kisi"
                 key3 = "xarici_odenisli_qadin"
             if values2[key1] != 0:
-                self.ws[f"AC{start+index}"].value = values2[key1]
-                self.ws[f"AC{start+index}"].alignment = Alignment(
-                    horizontal="center", vertical="center"
-                )
-                self.ws[f"AD{start+index}"].value = values2[key2]
+                self.ws[f"AD{start+index}"].value = values2[key1]
                 self.ws[f"AD{start+index}"].alignment = Alignment(
                     horizontal="center", vertical="center"
                 )
-                self.ws[f"AE{start+index}"].value = values2[key3]
+                self.ws[f"AE{start+index}"].value = values2[key2]
                 self.ws[f"AE{start+index}"].alignment = Alignment(
+                    horizontal="center", vertical="center"
+                )
+                self.ws[f"AF{start+index}"].value = values2[key3]
+                self.ws[f"AF{start+index}"].alignment = Alignment(
                     horizontal="center", vertical="center"
                 )
             if index == 0:
@@ -240,8 +240,8 @@ class Contingent:
             else:
                 key = "odenissiz_akmez"
             if ak_mez[key] != 0:
-                self.ws[f"AF{start+index}"].value = ak_mez[key]
-                self.ws[f"AF{start+index}"].alignment = Alignment(
+                self.ws[f"AG{start+index}"].value = ak_mez[key]
+                self.ws[f"AG{start+index}"].alignment = Alignment(
                     horizontal="center", vertical="center"
                 )
 
@@ -250,31 +250,31 @@ class Contingent:
             horizontal="center", vertical="center"
         )
 
-        self.ws[f"AC{start+3}"].value = (
-            values2["odenisli"] + values2["odenissiz"] + values2["xarici"]
-        )
-        self.ws[f"AC{start+3}"].alignment = Alignment(
-            horizontal="center", vertical="center"
-        )
         self.ws[f"AD{start+3}"].value = (
-            values2["odenisli_kisi"]
-            + values2["odenissiz_kisi"]
-            + values2["xarici_odenisli_kisi"]
+            values2["odenisli"] + values2["odenissiz"] + values2["xarici"]
         )
         self.ws[f"AD{start+3}"].alignment = Alignment(
             horizontal="center", vertical="center"
         )
         self.ws[f"AE{start+3}"].value = (
-            values2["odenisli_qadin"]
-            + values2["odenissiz_qadin"]
-            + values2["xarici_odenisli_qadin"]
+            values2["odenisli_kisi"]
+            + values2["odenissiz_kisi"]
+            + values2["xarici_odenisli_kisi"]
         )
         self.ws[f"AE{start+3}"].alignment = Alignment(
             horizontal="center", vertical="center"
         )
+        self.ws[f"AF{start+3}"].value = (
+            values2["odenisli_qadin"]
+            + values2["odenissiz_qadin"]
+            + values2["xarici_odenisli_qadin"]
+        )
+        self.ws[f"AF{start+3}"].alignment = Alignment(
+            horizontal="center", vertical="center"
+        )
         if sum_ak_mez != 0:
-            self.ws[f"AF{start+3}"].value = sum_ak_mez
-            self.ws[f"AF{start+3}"].alignment = Alignment(
+            self.ws[f"AG{start+3}"].value = sum_ak_mez
+            self.ws[f"AG{start+3}"].alignment = Alignment(
                 horizontal="center", vertical="center"
             )
 
@@ -367,7 +367,7 @@ class Contingent:
         return data
 
     def save(self, name):
-        self.__format_ws__(f"A6:AF{self.table_end}")
+        self.__format_ws__(f"A6:AG{self.table_end}")
         self.workbook.save(f"excel-files/{name}.xlsx")
 
     def _get_db_name(self, faculty_id):
