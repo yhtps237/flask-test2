@@ -67,10 +67,16 @@ class Contingent:
                 else i["gone_category"]
             )
             if i["income_category"] in sorted_data or i["gone_category"] in sorted_data:
+                if not sorted_data[category_name].get(i["course"], False):
+                    sorted_data[category_name][i["course"]] = {
+                        "odenisli": 0,
+                        "odenissiz": 0,
+                        "xarici": 0,
+                    }
 
                 if i["foreign"]:
                     sorted_data[category_name][i["course"]]["xarici"] += 1
-                if i["o/d"]:
+                elif i["o/d"]:
                     sorted_data[category_name][i["course"]]["odenisli"] += 1
                 else:
                     sorted_data[category_name][i["course"]]["odenissiz"] += 1
@@ -84,11 +90,11 @@ class Contingent:
                 }
                 if i["foreign"]:
                     sorted_data[category_name][i["course"]]["xarici"] += 1
-                if i["o/d"]:
+                elif i["o/d"]:
                     sorted_data[category_name][i["course"]]["odenisli"] += 1
                 else:
                     sorted_data[category_name][i["course"]]["odenissiz"] += 1
-
+        print(sorted_data)
         self.create_table(sorted_data)
 
     def merge_cells(self, range: str):
@@ -172,6 +178,7 @@ class Contingent:
             totals3["odenisli_akmez"] += ak_mez[i]["odenisli_akmez"]
             totals3["xarici_akmez"] += ak_mez[i]["xarici_akmez"]
             totals3["odenissiz_akmez"] += ak_mez[i].get("odenissiz_akmez", 0)
+        print("====", totals3)
 
         self.create_course("Ümumi cəmi", totals, totals2, totals3, start, 90)
         self.table_end = start + 3
@@ -181,6 +188,9 @@ class Contingent:
             values2["odenissiz"] = 0
             values2["odenissiz_qadin"] = 0
             values2["odenissiz_kisi"] = 0
+
+        if not ak_mez.get("odenissiz_akmez", False):
+            ak_mez["odenissiz_akmez"] = 0
 
         converter = {1: "I", 2: "II", 3: "III", 4: "IV", 5: "V", 6: "VI"}
         self.merge_cells(f"A{start}:A{start+3}")
@@ -239,6 +249,7 @@ class Contingent:
                 key = "xarici_akmez"
             else:
                 key = "odenissiz_akmez"
+            print(ak_mez)
             if ak_mez[key] != 0:
                 self.ws[f"AG{start+index}"].value = ak_mez[key]
                 self.ws[f"AG{start+index}"].alignment = Alignment(
@@ -285,6 +296,7 @@ class Contingent:
                     letter = i["letter"]
                     break
             else:
+                print(category)
                 letter = None
 
             # course_to_row = {1: 17, 2: 21, 3: 25, 4: 29, 5: 33, 6: 37}
@@ -298,6 +310,7 @@ class Contingent:
                         row = index
                         break
                 else:
+
                     row = None
 
                 # print(self.ws[f"A{row}"].value, converter[course])
@@ -435,9 +448,11 @@ class Contingent:
                                 AND semestr = '{self.sm}'
                                 {self.get_with_profession} AND std.profession_id={self.profession_id}
                                 AND pr.sectors={self.radio}
-                                AND (cm.date>="{self.edate}" OR cm.date is Null)
-                                OR (cm.date <= '{self.sdate}'
-                                AND cm.incomers_action IS NOT NULL)
+                                AND is_active = 1
+                                AND ((cm.date >= '{self.sdate}'
+                                OR cm.date IS NULL)
+                                OR (cm.date <= '{self.edate}'
+                                AND cm.incomers_action IS NOT NULL))
                                 
                                 
                         GROUP BY course , `o/d`
@@ -481,6 +496,7 @@ class Contingent:
                         AND pr.sectors={self.radio}
                         {self.get_with_profession} AND cm.profession_id={self.profession_id}
                     """
+            print(query)
             cursor.execute(query)
             result = cursor.fetchall()
 
@@ -498,7 +514,7 @@ class Contingent:
                     "o/d": student_result[0][11],
                 }
                 data.append(temp)
-
+                print(temp)
         disconnect_db(connection, database)
         return data
 
@@ -588,13 +604,13 @@ class Contingent:
                         SELECT 
                             std.course,
                             SUM(CASE
-                                WHEN cm.goners_action IN (1 , 2, 4) THEN 1
+                                WHEN foreign_student = False and cm.goners_action IN (1 , 2, 3, 4) THEN 1
                                 ELSE 0
                             END) AS `ak.mez`,
                             SUM(CASE
                                 WHEN
                                     foreign_student = TRUE
-                                        AND cm.goners_action IN (1 , 2, 4)
+                                        AND cm.goners_action IN (1 , 2, 3, 4)
                                 THEN
                                     1
                                 ELSE 0
@@ -607,10 +623,13 @@ class Contingent:
                             examsystem.professions AS pr on pr.id=std.profession_id
                         WHERE 
                             pr.sectors = {self.radio}
+                            AND cm.faculty_id = {self.faculty_id}
                             {self.get_with_profession} AND std.profession_id={self.profession_id}
                         GROUP BY course , `o/d`
                         ORDER BY course , `o/d` DESC;
                     """
+
+            print(query)
             cursor.execute(query)
             ak_mez = cursor.fetchall()
             result_ak_mez = {}
