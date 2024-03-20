@@ -145,7 +145,7 @@
             "letter": "J",
             "key": "J10",
             "range": "J10:J16",
-            "text": "Yda-dan keçmədiyindən normativdən artiq təhsil alanə",
+            "text": "Yda-da keçmədiyindən normativdən artıq təhsil alan",
             "kwargs": {
                 "textRotation": 90,
                 "wrapText": true
@@ -205,7 +205,7 @@
             "letter": "P",
             "key": "P10",
             "range": "P10:P16",
-            "text": "Ailə vəz ilə əlaqədar ak.məz.",
+            "text": "Ailə vəz ilə əlaqədar ak.məz",
             "kwargs": {
                 "textRotation": 90,
                 "wrapText": true
