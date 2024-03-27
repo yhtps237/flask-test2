@@ -249,7 +249,6 @@ class Contingent:
                 key = "xarici_akmez"
             else:
                 key = "odenissiz_akmez"
-            print(ak_mez)
             if ak_mez[key] != 0:
                 self.ws[f"AG{start+index}"].value = ak_mez[key]
                 self.ws[f"AG{start+index}"].alignment = Alignment(
@@ -331,22 +330,136 @@ class Contingent:
                     self.ws[f"{letter}{row}"].alignment = Alignment(
                         horizontal="center", vertical="center"
                     )
+
+                    if letter in ["D", "E", "F", "G", "H", "I", "J", "K"]:
+                        self.ws[f"L{row}"].value = f"=SUM(D{row}:K{row})"
+                        self.ws[f"L{row}"].alignment = Alignment(
+                            horizontal="center", vertical="center"
+                        )
+
+                    if letter in [
+                        "M",
+                        "N",
+                        "O",
+                        "P",
+                        "Q",
+                        "R",
+                        "S",
+                        "T",
+                        "U",
+                        "W",
+                        "X",
+                        "Y",
+                        "Z",
+                        "AA",
+                        "AB",
+                    ]:
+                        self.ws[f"AC{row}"].value = f"=SUM(M{row}:AB{row})"
+                        self.ws[f"AC{row}"].alignment = Alignment(
+                            horizontal="center", vertical="center"
+                        )
                 if odenissiz != 0:
                     self.ws[f"{letter}{row+1}"].value = odenissiz
                     self.ws[f"{letter}{row+1}"].alignment = Alignment(
                         horizontal="center", vertical="center"
                     )
+
+                    if letter in ["D", "E", "F", "G", "H", "I", "J", "K"]:
+                        self.ws[f"L{row+1}"].value = f"=SUM(D{row+1}:K{row+1})"
+                        self.ws[f"L{row+1}"].alignment = Alignment(
+                            horizontal="center", vertical="center"
+                        )
+
+                    if letter in [
+                        "M",
+                        "N",
+                        "O",
+                        "P",
+                        "Q",
+                        "R",
+                        "S",
+                        "T",
+                        "U",
+                        "W",
+                        "X",
+                        "Y",
+                        "Z",
+                        "AA",
+                        "AB",
+                    ]:
+                        self.ws[f"AC{row+1}"].value = f"=SUM(M{row+1}:AB{row+1})"
+                        self.ws[f"AC{row+1}"].alignment = Alignment(
+                            horizontal="center", vertical="center"
+                        )
+
                 if xarici != 0:
                     self.ws[f"{letter}{row+2}"].value = xarici
                     self.ws[f"{letter}{row+2}"].alignment = Alignment(
                         horizontal="center", vertical="center"
                     )
+
+                    if letter in ["D", "E", "F", "G", "H", "I", "J", "K"]:
+                        self.ws[f"L{row+2}"].value = f"=SUM(D{row+2}:K{row+2})"
+                        self.ws[f"L{row+2}"].alignment = Alignment(
+                            horizontal="center", vertical="center"
+                        )
+
+                    if letter in [
+                        "M",
+                        "N",
+                        "O",
+                        "P",
+                        "Q",
+                        "R",
+                        "S",
+                        "T",
+                        "U",
+                        "W",
+                        "X",
+                        "Y",
+                        "Z",
+                        "AA",
+                        "AB",
+                    ]:
+                        self.ws[f"AC{row+2}"].value = f"=SUM(M{row+2}:AB{row+2})"
+                        self.ws[f"AC{row+2}"].alignment = Alignment(
+                            horizontal="center", vertical="center"
+                        )
+
                 if cemi != 0:
                     self.ws[f"{letter}{row+3}"].value = cemi
                     self.ws[f"{letter}{row+3}"].alignment = Alignment(
                         horizontal="center", vertical="center"
                     )
-                # row += 4
+
+                    if letter in ["D", "E", "F", "G", "H", "I", "J", "K"]:
+                        self.ws[f"L{row+3}"].value = f"=SUM(D{row+3}:K{row+3})"
+                        self.ws[f"L{row+3}"].alignment = Alignment(
+                            horizontal="center", vertical="center"
+                        )
+
+                    if letter in [
+                        "M",
+                        "N",
+                        "O",
+                        "P",
+                        "Q",
+                        "R",
+                        "S",
+                        "T",
+                        "U",
+                        "W",
+                        "X",
+                        "Y",
+                        "Z",
+                        "AA",
+                        "AB",
+                    ]:
+                        self.ws[f"AC{row+3}"].value = f"=SUM(M{row+3}:AB{row+3})"
+                        self.ws[f"AC{row+3}"].alignment = Alignment(
+                            horizontal="center", vertical="center"
+                        )
+
             odenisli = total["odenisli"]
             odenissiz = total["odenissiz"]
             xarici = total["xarici"]
@@ -358,21 +471,136 @@ class Contingent:
                 self.ws[f"{letter}{row}"].alignment = Alignment(
                     horizontal="center", vertical="center"
                 )
+
+                if letter in ["D", "E", "F", "G", "H", "I", "J", "K"]:
+                    self.ws[f"L{row}"].value = f"=SUM(D{row}:K{row})"
+                    self.ws[f"L{row}"].alignment = Alignment(
+                        horizontal="center", vertical="center"
+                    )
+
+                if letter in [
+                    "M",
+                    "N",
+                    "O",
+                    "P",
+                    "Q",
+                    "R",
+                    "S",
+                    "T",
+                    "U",
+                    "W",
+                    "X",
+                    "Y",
+                    "Z",
+                    "AA",
+                    "AB",
+                ]:
+                    self.ws[f"AC{row}"].value = f"=SUM(M{row}:AB{row})"
+                    self.ws[f"AC{row}"].alignment = Alignment(
+                        horizontal="center", vertical="center"
+                    )
+
             if odenissiz != 0:
                 self.ws[f"{letter}{row+1}"].value = odenissiz
                 self.ws[f"{letter}{row+1}"].alignment = Alignment(
                     horizontal="center", vertical="center"
                 )
+
+                if letter in ["D", "E", "F", "G", "H", "I", "J", "K"]:
+                    self.ws[f"L{row+1}"].value = f"=SUM(D{row+1}:K{row+1})"
+                    self.ws[f"L{row+1}"].alignment = Alignment(
+                        horizontal="center", vertical="center"
+                    )
+
+                if letter in [
+                    "M",
+                    "N",
+                    "O",
+                    "P",
+                    "Q",
+                    "R",
+                    "S",
+                    "T",
+                    "U",
+                    "W",
+                    "X",
+                    "Y",
+                    "Z",
+                    "AA",
+                    "AB",
+                ]:
+                    self.ws[f"AC{row+1}"].value = f"=SUM(M{row+1}:AB{row+1})"
+                    self.ws[f"AC{row+1}"].alignment = Alignment(
+                        horizontal="center", vertical="center"
+                    )
+
             if xarici != 0:
                 self.ws[f"{letter}{row+2}"].value = xarici
                 self.ws[f"{letter}{row+2}"].alignment = Alignment(
                     horizontal="center", vertical="center"
                 )
+
+                if letter in ["D", "E", "F", "G", "H", "I", "J", "K"]:
+                    self.ws[f"L{row+2}"].value = f"=SUM(D{row+2}:K{row+2})"
+                    self.ws[f"L{row+2}"].alignment = Alignment(
+                        horizontal="center", vertical="center"
+                    )
+
+                if letter in [
+                    "M",
+                    "N",
+                    "O",
+                    "P",
+                    "Q",
+                    "R",
+                    "S",
+                    "T",
+                    "U",
+                    "W",
+                    "X",
+                    "Y",
+                    "Z",
+                    "AA",
+                    "AB",
+                ]:
+                    self.ws[f"AC{row+2}"].value = f"=SUM(M{row+2}:AB{row+2})"
+                    self.ws[f"AC{row+2}"].alignment = Alignment(
+                        horizontal="center", vertical="center"
+                    )
+
             if cemi != 0:
                 self.ws[f"{letter}{row+3}"].value = cemi
                 self.ws[f"{letter}{row+3}"].alignment = Alignment(
                     horizontal="center", vertical="center"
                 )
+
+                if letter in ["D", "E", "F", "G", "H", "I", "J", "K"]:
+                    self.ws[f"L{row+3}"].value = f"=SUM(D{row+3}:K{row+3})"
+                    self.ws[f"L{row+3}"].alignment = Alignment(
+                        horizontal="center", vertical="center"
+                    )
+
+                if letter in [
+                    "M",
+                    "N",
+                    "O",
+                    "P",
+                    "Q",
+                    "R",
+                    "S",
+                    "T",
+                    "U",
+                    "W",
+                    "X",
+                    "Y",
+                    "Z",
+                    "AA",
+                    "AB",
+                ]:
+                    self.ws[f"AC{row+3}"].value = f"=SUM(M{row+3}:AB{row+3})"
+                    self.ws[f"AC{row+3}"].alignment = Alignment(
+                        horizontal="center", vertical="center"
+                    )
 
     def read_data(self):
         with open("flasktest/modules/coordinates.json", encoding="utf-8") as f:
@@ -448,7 +676,6 @@ class Contingent:
                                 AND semestr = '{self.sm}'
                                 {self.get_with_profession} AND std.profession_id={self.profession_id}
                                 AND pr.sectors={self.radio}
-                                AND is_active = 1
                                 AND ((cm.date >= '{self.sdate}'
                                 OR cm.date IS NULL)
                                 OR (cm.date <= '{self.edate}'
@@ -458,7 +685,7 @@ class Contingent:
                         GROUP BY course , `o/d`
                         ORDER BY course, `o/d` desc;
                     """
-            # print(query)
+            print(query)
             cursor.execute(query)
             result = cursor.fetchall()
 
@@ -644,6 +871,124 @@ class Contingent:
 
         disconnect_db(connection, database)
         return result_dict, result_ak_mez
+
+
+class Students:
+    def __init__(self, edu, sm, faculty_id, radio) -> None:
+        self.edu = edu
+        self.sm = sm
+        self.faculty_id = faculty_id
+        self.radio = radio
+        self.db_name = self._get_db_name(self.faculty_id)
+
+        self.workbook = openpyxl.Workbook()
+        self.ws = self.workbook.active
+
+        students = self.get_students()
+        self.put_table(students)
+
+    def save(self, name):
+        self.workbook.save(f"excel-files/{name}.xlsx")
+
+    def _get_db_name(self, faculty_id):
+        connection = connect_db(database)
+        with connection.cursor() as cursor:
+            query = (
+                f"SELECT db_name FROM examsystem.faculty_names where id={faculty_id};"
+            )
+            cursor.execute(query)
+            result = cursor.fetchall()
+
+        disconnect_db(connection, database)
+
+        if result:
+            return result[0][0]
+        return None
+
+    def _get_faculty_name(self, faculty_id):
+        connection = connect_db(database)
+        with connection.cursor() as cursor:
+            query = f"SELECT faculty_name FROM examsystem.faculty_names where id={faculty_id};"
+            cursor.execute(query)
+            result = cursor.fetchall()
+
+        disconnect_db(connection, database)
+
+        if result:
+            return result[0][0]
+        return None
+
+    def get_students(self):
+        db_name = self._get_db_name(self.faculty_id)
+        connection = connect_db(database)
+        with connection.cursor() as cursor:
+            query = f"""
+                        SELECT 
+                            std.educationYear,
+                            std.semestr,
+                            pr.profession_name,
+                            std.course,
+                            std.student_name,
+                            std.student_code,
+                            std.student_class,
+                            CASE
+                                WHEN std.normal_student = TRUE THEN 'Normal'
+                                ELSE 'Kəsir'
+                            END AS student,
+                            CASE
+                                WHEN std.foreign_student = TRUE THEN 'Xarici'
+                                ELSE 'Yerli'
+                            END AS milliyet,
+                            CASE
+                                WHEN std.gender = TRUE THEN 'Kişi'
+                                ELSE 'Qadın'
+                            END AS cinsi,
+                            CASE
+                                WHEN std.`o/d` = TRUE THEN 'Ödənişli'
+                                ELSE 'Dövlət Sifarişli'
+                            END AS od,
+                            CASE
+                                WHEN std.is_active = TRUE THEN 'Aktiv'
+                                ELSE 'Passiv'
+                            END AS od,
+                            vr.report_name
+                        FROM
+                            {db_name}.students AS std
+                                JOIN
+                            examsystem.professions AS pr ON pr.id = std.profession_id
+                                LEFT JOIN
+                            examsystem.valid_reasons AS vr ON vr.reason_id = std.valid_reason
+                        WHERE
+                            educationYear = '{self.edu}'
+                                AND semestr = '{self.sm}'
+                                AND pr.sectors={self.radio}
+                            
+                """
+            cursor.execute(query)
+            result = cursor.fetchall()
+
+        disconnect_db(connection, database)
+        return result
+
+    def put_table(self, data):
+        columns = [
+            "Tədris ili",
+            "Semestr",
+            "İxtisas adı",
+            "Kurs",
+            "Tələbə Ad",
+            "Tələbə Kodu",
+            "Tələbə Qurubu",
+            "Tələbə Növü",
+            "Milliyyəti",
+            "Cinsi",
+            "Ödəniş",
+            "Status",
+            "Üzürlü səbəbi",
+        ]
+        self.ws.append(columns)
+        for row in data:
+            self.ws.append(row)
 
 
 class MovementReport:

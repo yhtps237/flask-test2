@@ -5,6 +5,7 @@ from flasktest.forms import (
     LoginForm,
     UpdateAccountForm,
     ContingentForm,
+    StudentsForm,
 )
 from flasktest.models import User
 from flasktest.database import database, connect_db, disconnect_db
@@ -17,7 +18,7 @@ import requests
 import secrets
 import os
 import io
-from flasktest.modules.module import Contingent, MovementReport
+from flasktest.modules.module import Contingent, MovementReport, Students
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -175,7 +176,7 @@ def get_professions():
 
 @app.route("/contingent", methods=["GET", "POST"])
 @login_required
-def contingent_vew():
+def contingent_view():
     form = ContingentForm()
 
     # ---------------------------------------------------------
@@ -252,6 +253,65 @@ def contingent_vew():
         else:
             print(form.errors)
     return render_template("contingent.html", title="contingent", form=form)
+
+
+@app.route("/students", methods=["GET", "POST"])
+@login_required
+def students_view():
+    form = StudentsForm()
+
+    # ---------------------------------------------------------
+    connection = connect_db(database)
+    faculty_id = 2
+    if request.method == "POST":
+        faculty_id = form.faculty_name.data
+
+    with connection.cursor() as cursor:
+        if current_user.faculty_id == 0:
+            query = """SELECT id, faculty_name from examsystem.faculty_names;
+                    """
+            cursor.execute(query)
+            faculty_names = cursor.fetchall()
+        else:
+            faculty_id = current_user.faculty_id
+            query = f"""SELECT id, faculty_name from examsystem.faculty_names
+                        where id={faculty_id};
+                    """
+            cursor.execute(query)
+            faculty_names = cursor.fetchall()
+
+        query = """SELECT year_name, year_name from examsystem.years;
+                """
+        cursor.execute(query)
+        years = cursor.fetchall()
+
+    disconnect_db(connection, database)
+    form.faculty_name.choices = faculty_names
+
+    form.eduyear.choices = years
+    form.semestr.choices = [("PAYIZ", "PAYIZ"), ("YAZ", "YAZ")]
+    # ---------------------------------------------------------
+    current_year = datetime.datetime.now().year
+
+    if request.method == "POST":
+        if form.validate_on_submit():
+            faculty_id = form.faculty_name.data
+            edu = form.eduyear.data
+            sm = form.semestr.data
+            radio = form.radio.data
+            students = Students(edu, sm, faculty_id, radio)
+            students.save(f"{faculty_id}-students-{radio}")
+
+            return send_file(
+                f"../excel-files/{faculty_id}-students-{radio}.xlsx",
+                as_attachment=True,
+                download_name=f"{faculty_id}-students-{radio}.xlsx",
+                mimetype="application/excel",
+            )
+            # return redirect(request.url)
+        else:
+            print(form.errors)
+    return render_template("students.html", title="Tələbələr", form=form)
 
 
 def save_picture(form_picture):

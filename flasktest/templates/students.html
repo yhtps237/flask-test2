@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="content-section">
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <div class="form-group">
+                {{form.faculty_name.label(class="form-control-label")}}
+                {{form.faculty_name(**{"class": "form-control", "hx-get":
+                "/get_professions", "hx-target": "#profession_name"} )}}
+            </div>
+
+            <div class="form-group">
+                {{form.eduyear.label(class="form-control-label")}}
+                {{form.eduyear(class="form-control ")}}
+            </div>
+
+            <div class="form-group">
+                {{form.semestr.label(class="form-control-label")}}
+                {% if form.semestr.errors %}
+
+                {{form.semestr(class="form-control  is-invalid")}}
+                <div class="invalid-feedback">
+                    {% for error in form.semestr.errors %}
+                    <span>{{error}}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{form.semestr(class="form-control ")}}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+
+                {% for subfield in form.radio %}
+                <div class="form-check">
+                    {{ subfield(class="form-check-input") }}
+                    {{ subfield.label(class="form-check-label") }}
+                </div>
+                {% endfor %}
+
+            </div>
+
+        </fieldset>
+        <div class="form-group">
+            {{form.submit(class="btn btn-outline-info")}}
+        </div>
+    </form>
+</div>
+{% endblock content %}
