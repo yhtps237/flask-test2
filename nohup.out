@@ -1,0 +1,12 @@
+INFO:waitress:Serving on http://[::1]:5000
+INFO:waitress:Serving on http://127.0.0.1:5000
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+INFO:waitress:Serving on http://[::1]:5000
+INFO:waitress:Serving on http://127.0.0.1:5000
+INFO:waitress:Serving on http://[::1]:5000
+INFO:waitress:Serving on http://127.0.0.1:5000
+INFO:waitress:Serving on http://[::1]:5000
+INFO:waitress:Serving on http://127.0.0.1:5000
+INFO:waitress:Serving on http://[::1]:5000
+INFO:waitress:Serving on http://127.0.0.1:5000
