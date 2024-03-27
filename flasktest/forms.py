@@ -76,6 +76,20 @@ class ContingentForm(FlaskForm):
     submit = SubmitField("Çap et")
 
 
+class StudentsForm(FlaskForm):
+    faculty_name = SelectField("Fakültə Adı", validators=[DataRequired()])
+    eduyear = SelectField("Tədris ili", validators=[DataRequired()])
+    semestr = SelectField("Semestr", validators=[DataRequired()])
+
+    radio = RadioField(
+        "Label",
+        choices=[("1", "Əyani"), ("2", "Qiyabi"), ("3", "ƏAT")],
+        validators=[DataRequired()],
+    )
+
+    submit = SubmitField("Çap et")
+
+
 class LoginForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
     password = PasswordField("Şifrə", validators=[DataRequired()])

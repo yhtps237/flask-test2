@@ -10,3 +10,333 @@ INFO:waitress:Serving on http://[::1]:5000
 INFO:waitress:Serving on http://127.0.0.1:5000
 INFO:waitress:Serving on http://[::1]:5000
 INFO:waitress:Serving on http://127.0.0.1:5000
+INFO:waitress:Serving on http://[::1]:5000
+INFO:waitress:Serving on http://127.0.0.1:5000
+WARNING:waitress.queue:Task queue depth is 1
+WARNING:waitress.queue:Task queue depth is 1
+WARNING:waitress.queue:Task queue depth is 1
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+SELECT 
+                            std.course,
+                            SUM(CASE
+                                    WHEN foreign_student = FALSE THEN 1
+                                    ELSE 0
+                                END) AS normal,
+                                SUM(CASE
+                                    WHEN foreign_student = TRUE THEN 1
+                                    ELSE 0
+                                END) AS xarici
+                        FROM
+                            med.students as std
+                                LEFT JOIN
+                            examsystem.contingent_movements AS cm ON cm.student_id = std.id
+                                JOIN
+                            examsystem.professions AS pr on pr.id=std.profession_id
+                        WHERE
+                            educationYear = '2020/2021'
+                                AND semestr = 'PAYIZ'
+                                --  AND std.profession_id=0
+                                AND pr.sectors=1
+                                AND ((cm.date >= '2024-02-01'
+                                OR cm.date IS NULL)
+                                OR (cm.date <= '2024-03-01'
+                                AND cm.incomers_action IS NOT NULL))
+                                
+                                
+                        GROUP BY course , `o/d`
+                        ORDER BY course, `o/d` desc;
+                    
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+
+                        SELECT 
+                            std.course,
+                            SUM(CASE
+                                WHEN foreign_student = False and cm.goners_action IN (1 , 2, 3, 4) THEN 1
+                                ELSE 0
+                            END) AS `ak.mez`,
+                            SUM(CASE
+                                WHEN
+                                    foreign_student = TRUE
+                                        AND cm.goners_action IN (1 , 2, 3, 4)
+                                THEN
+                                    1
+                                ELSE 0
+                            END) AS xarici
+                        FROM
+                            med.students AS std
+                                LEFT JOIN
+                            examsystem.contingent_movements AS cm ON cm.student_id = std.id
+                                JOIN
+                            examsystem.professions AS pr on pr.id=std.profession_id
+                        WHERE 
+                            pr.sectors = 1
+                            AND cm.faculty_id = 10
+                            --  AND std.profession_id=0
+                        GROUP BY course , `o/d`
+                        ORDER BY course , `o/d` DESC;
+                    
+[+] Disconnected successfully from ramil@localhost:3306
+==== {'odenisli_akmez': 0, 'xarici_akmez': 0, 'odenissiz_akmez': 0}
+[+] Connected successfully to ramil@localhost:3306
+
+                    SELECT 
+                        cm.student_id, ci.category_name, cg.category_name
+                    FROM
+                        examsystem.contingent_movements AS cm
+                            LEFT JOIN
+                        examsystem.contingent_incomers AS ci ON ci.id = cm.incomers_action
+                            LEFT JOIN
+                        examsystem.contingent_goners AS cg ON cg.id = cm.goners_action
+                            JOIN
+                        examsystem.professions AS pr on pr.id=cm.profession_id
+
+                    WHERE
+                        cm.faculty_id = 10 AND (date >= '2024-02-01' and date <= "2024-03-01")
+                        AND pr.sectors=1
+                        --  AND cm.profession_id=0
+                    
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 3, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 3, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 4, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 6, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}ERROR:flasktest:Exception on /contingent [POST]
+Traceback (most recent call last):
+  File "/var/www/contingent/.venv/lib/python3.9/site-packages/flask/app.py", line 1463, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/var/www/contingent/.venv/lib/python3.9/site-packages/flask/app.py", line 872, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/var/www/contingent/.venv/lib/python3.9/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/var/www/contingent/.venv/lib/python3.9/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/var/www/contingent/.venv/lib/python3.9/site-packages/flask_login/utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "/var/www/contingent/flasktest/route.py", line 241, in contingent_view
+    contingent = Contingent(
+  File "/var/www/contingent/flasktest/modules/module.py", line 98, in __init__
+    self.create_table(sorted_data)
+  File "/var/www/contingent/flasktest/modules/module.py", line 396, in create_table
+    self.ws[f"{letter}{row+2}"].value = xarici
+TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 3, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 3, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 4, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 5, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 5, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 5, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 5, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 3, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 3, 'foreign': 1, 'o/d': 1}
+{'income_category': 'Bərpa edilmiş', 'gone_category': None, 'course': 3, 'foreign': 1, 'o/d': 1}
+{'income_category': 'Bərpa edilmiş', 'gone_category': None, 'course': 3, 'foreign': 1, 'o/d': 1}
+{'income_category': 'Bərpa edilmiş', 'gone_category': None, 'course': 3, 'foreign': 1, 'o/d': 1}
+{'income_category': 'Bərpa edilmiş', 'gone_category': None, 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sosial məzuniyyət', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Ailə vəz ilə əlaqədar ak.məz', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 5, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Öz ərizəsi əsasında', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sənədləri təqdim etmədiyi üçün (miqrasiya)', 'course': 1, 'foreign': 1, 'o/d': 1}
+[+] Disconnected successfully from ramil@localhost:3306
+{'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş': {1: {'odenisli': 0, 'odenissiz': 0, 'xarici': 17}, 2: {'odenisli': 0, 'odenissiz': 0, 'xarici': 15}, 3: {'odenisli': 0, 'odenissiz': 0, 'xarici': 6}, 4: {'odenisli': 0, 'odenissiz': 0, 'xarici': 2}, 6: {'odenisli': 0, 'odenissiz': 0, 'xarici': 1}, 5: {'odenisli': 0, 'odenissiz': 0, 'xarici': 5}}, 'Bərpa edilmiş': {3: {'odenisli': 0, 'odenissiz': 0, 'xarici': 3}, 2: {'odenisli': 0, 'odenissiz': 0, 'xarici': 1}}, 'Sosial məzuniyyət': {1: {'odenisli': 0, 'odenissiz': 0, 'xarici': 1}}, 'Ailə vəz ilə əlaqədar ak.məz': {1: {'odenisli': 0, 'odenissiz': 0, 'xarici': 1}}, 'Öz ərizəsi əsasında': {1: {'odenisli': 0, 'odenissiz': 0, 'xarici': 1}}, 'Sənədləri təqdim etmədiyi üçün (miqrasiya)': {1: {'odenisli': 0, 'odenissiz': 0, 'xarici': 1}}}
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+SELECT 
+                            std.course,
+                            SUM(CASE
+                                    WHEN foreign_student = FALSE THEN 1
+                                    ELSE 0
+                                END) AS normal,
+                                SUM(CASE
+                                    WHEN foreign_student = TRUE THEN 1
+                                    ELSE 0
+                                END) AS xarici
+                        FROM
+                            med.students as std
+                                LEFT JOIN
+                            examsystem.contingent_movements AS cm ON cm.student_id = std.id
+                                JOIN
+                            examsystem.professions AS pr on pr.id=std.profession_id
+                        WHERE
+                            educationYear = '2023/2024'
+                                AND semestr = 'PAYIZ'
+                                --  AND std.profession_id=0
+                                AND pr.sectors=1
+                                AND ((cm.date >= '2024-02-01'
+                                OR cm.date IS NULL)
+                                OR (cm.date <= '2024-03-01'
+                                AND cm.incomers_action IS NOT NULL))
+                                
+                                
+                        GROUP BY course , `o/d`
+                        ORDER BY course, `o/d` desc;
+                    
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+
+                        SELECT 
+                            std.course,
+                            SUM(CASE
+                                WHEN foreign_student = False and cm.goners_action IN (1 , 2, 3, 4) THEN 1
+                                ELSE 0
+                            END) AS `ak.mez`,
+                            SUM(CASE
+                                WHEN
+                                    foreign_student = TRUE
+                                        AND cm.goners_action IN (1 , 2, 3, 4)
+                                THEN
+                                    1
+                                ELSE 0
+                            END) AS xarici
+                        FROM
+                            med.students AS std
+                                LEFT JOIN
+                            examsystem.contingent_movements AS cm ON cm.student_id = std.id
+                                JOIN
+                            examsystem.professions AS pr on pr.id=std.profession_id
+                        WHERE 
+                            pr.sectors = 1
+                            AND cm.faculty_id = 10
+                            --  AND std.profession_id=0
+                        GROUP BY course , `o/d`
+                        ORDER BY course , `o/d` DESC;
+                    
+[+] Disconnected successfully from ramil@localhost:3306
+==== {'odenisli_akmez': 1, 'xarici_akmez': 5, 'odenissiz_akmez': 0}
+[+] Connected successfully to ramil@localhost:3306
+
+                    SELECT 
+                        cm.student_id, ci.category_name, cg.category_name
+                    FROM
+                        examsystem.contingent_movements AS cm
+                            LEFT JOIN
+                        examsystem.contingent_incomers AS ci ON ci.id = cm.incomers_action
+                            LEFT JOIN
+                        examsystem.contingent_goners AS cg ON cg.id = cm.goners_action
+                            JOIN
+                        examsystem.professions AS pr on pr.id=cm.profession_id
+
+                    WHERE
+                        cm.faculty_id = 10 AND (date >= '2024-02-01' and date <= "2024-03-01")
+                        AND pr.sectors=1
+                        --  AND cm.profession_id=0
+                    
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 3, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 3, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 4, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 6, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 3, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 3, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 4, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 5, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 5, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 5, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 5, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 3, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 3, 'foreign': 1, 'o/d': 1}
+{'income_category': 'Bərpa edilmiş', 'gone_category': None, 'course': 3, 'foreign': 1, 'o/d': 1}
+{'income_category': 'Bərpa edilmiş', 'gone_category': None, 'course': 3, 'foreign': 1, 'o/d': 1}
+{'income_category': 'Bərpa edilmiş', 'gone_category': None, 'course': 3, 'foreign': 1, 'o/d': 1}
+{'income_category': 'Bərpa edilmiş', 'gone_category': None, 'course': 2, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sosial məzuniyyət', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Ailə vəz ilə əlaqədar ak.məz', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 5, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Öz ərizəsi əsasında', 'course': 1, 'foreign': 1, 'o/d': 1}WARNING:waitress.queue:Task queue depth is 1
+WARNING:waitress.queue:Task queue depth is 1
+WARNING:waitress.queue:Task queue depth is 1
+WARNING:waitress.queue:Task queue depth is 1
