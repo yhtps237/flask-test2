@@ -76,7 +76,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
 
         if user and bcrypt.check_password_hash(user.password, password):
-            flash(f"You have been logged in!", category="success")
+            flash(f"Uğurla giriş edildi!", category="success")
             login_user(user, remember=form.remember.data)
 
             next_page = request.args.get("next")
@@ -86,7 +86,7 @@ def login():
             return redirect(url_for("index"))
         else:
             flash(
-                f"Login Unsuccessful. Please check email and password",
+                f"Giriş edilə bilmədi, mail və şifrənizi yoxlayın",
                 category="danger",
             )
 
@@ -134,7 +134,7 @@ def register():
         db.session.commit()
 
         flash(
-            f"Account created for {form.username.data}. Please login.",
+            f"Hesab {form.username.data} yaradıldı.",
             category="success",
         )
         return redirect(url_for("login"))
@@ -145,7 +145,7 @@ def register():
 @app.route("/about")
 @login_required
 def about():
-    return render_template("about.html", title="About")
+    return render_template("about.html", title="Haqqında")
 
 
 @app.route("/get_professions")
@@ -252,7 +252,7 @@ def contingent_view():
             # return redirect(request.url)
         else:
             print(form.errors)
-    return render_template("contingent.html", title="contingent", form=form)
+    return render_template("contingent.html", title="Kontingent", form=form)
 
 
 @app.route("/students", methods=["GET", "POST"])
@@ -342,12 +342,12 @@ def account():
         current_user.username = form.username.data
         current_user.email = form.email.data
         db.session.commit()
-        flash("Your account has been updated!", "success")
+        flash("Hesab uğurla yeniləndi!", "success")
         return redirect(url_for("account"))
     elif request.method == "GET":
         form.username.data = current_user.username
         form.email.data = current_user.email
 
     return render_template(
-        "account.html", title=f"Account {username}", image_file=image_file, form=form
+        "account.html", title=f"Hesab {username}", image_file=image_file, form=form
     )
