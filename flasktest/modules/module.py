@@ -676,12 +676,15 @@ class Contingent:
                                 AND semestr = '{self.sm}'
                                 {self.get_with_profession} AND std.profession_id={self.profession_id}
                                 AND pr.sectors={self.radio}
-                                AND ((cm.date >= '{self.sdate}'
-                                OR cm.date IS NULL)
-                                OR (cm.date <= '{self.edate}'
-                                AND cm.incomers_action IS NOT NULL))
-                                
-                                
+                                -- AND ((cm.date>='{self.sdate}'  
+                                -- OR cm.date IS NULL)
+                                -- OR (cm.date <= '{self.edate}'
+                                -- AND cm.incomers_action IS NOT NULL))
+                                AND (((cm.date>='{self.sdate}' and cm.date<='{self.sdate}' and cm.goners_action in (1, 2, 3, 4) )
+                                or (cm.date >= '{self.sdate}' and cm.date<='{self.edate}' and cm.goners_action is not null)
+                                or (cm.date <= '{self.sdate}' and cm.incomers_action is not null)
+                                -- AND cm.goners_action IS NOT NULL
+                                ) or cm.date IS NULL)
                         GROUP BY course , `o/d`
                         ORDER BY course, `o/d` desc;
                     """
@@ -831,7 +834,7 @@ class Contingent:
                         SELECT 
                             std.course,
                             SUM(CASE
-                                WHEN foreign_student = False and cm.goners_action IN (1 , 2, 3, 4) THEN 1
+                                WHEN foreign_student = False and cm.goners_action IN (1, 2, 3, 4) THEN 1
                                 ELSE 0
                             END) AS `ak.mez`,
                             SUM(CASE
