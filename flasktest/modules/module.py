@@ -55,7 +55,9 @@ class Contingent:
         self.create_headings()
         result_dict = self.get_students()
         result_dict2, ak_mez = self.get_students_after_movements()
-
+        print(result_dict)
+        print(result_dict2)
+        print(ak_mez)
         self.create_student_count(result_dict, result_dict2, ak_mez)
 
         data = self.get_contingent_movements()
@@ -155,11 +157,26 @@ class Contingent:
         totals3 = {"odenisli_akmez": 0, "xarici_akmez": 0, "odenissiz_akmez": 0}
 
         start = 17
+
         for i in result_dict:
             # print(result_dict[i])
             # print(result_dict2[i])
             # print(ak_mez[i])
-            self.create_course(i, result_dict[i], result_dict2[i], ak_mez[i], start, 0)
+            if not ak_mez.get(i, False):
+                ak_mez[i] = {
+                    "odenisli_akmez": 0,
+                    "xarici_akmez": 0,
+                    "odenissiz_akmez": 0,
+                }
+
+            self.create_course(
+                i,
+                result_dict[i],
+                result_dict2[i],
+                ak_mez[i],
+                start,
+                0,
+            )
             start += 4
 
             for a in result_dict[i]:
@@ -676,12 +693,11 @@ class Contingent:
                                 AND semestr = '{self.sm}'
                                 {self.get_with_profession} AND std.profession_id={self.profession_id}
                                 AND pr.sectors={self.radio}
-                                AND ((cm.date >= '{self.sdate}'
+                                AND ((cm.date>='{self.sdate}'  
                                 OR cm.date IS NULL)
                                 OR (cm.date <= '{self.edate}'
                                 AND cm.incomers_action IS NOT NULL))
-                                
-                                
+                                  
                         GROUP BY course , `o/d`
                         ORDER BY course, `o/d` desc;
                     """
@@ -803,12 +819,17 @@ class Contingent:
                                 AND pr.sectors = {self.radio}
                                 {self.get_with_profession} AND std.profession_id={self.profession_id}
                                 AND is_active = 1
+                                -- AND ((cm.date >= '{self.sdate}'
+                                -- OR cm.date IS NULL)
+                                -- OR (cm.date <= '{self.edate}'
+                                -- AND cm.incomers_action IS NOT NULL))
                                 
                                 
                         GROUP BY course , `o/d`
                         ORDER BY course , `o/d` DESC;
                     """
-            # print(query)
+
+            print(query)
             cursor.execute(query)
             result = cursor.fetchall()
 
