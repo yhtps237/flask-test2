@@ -15,6 +15,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     image = db.Column(db.String(20), nullable=False, default="default.jpg")
     faculty_id = db.Column(db.Integer, nullable=True, default=None)
+    is_superuser = db.Column(db.Boolean, nullable=False, default=False)
 
     def __repr__(self) -> str:
         return f"User: {self.username}"

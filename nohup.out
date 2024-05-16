@@ -5021,4 +5021,517 @@ SELECT
 {'income_category': None, 'gone_category': 'Sosial məzuniyyət', 'course': 1, 'foreign': 1, 'o/d': 1}
 {'income_category': None, 'gone_category': 'Ailə vəz ilə əlaqədar ak.məz', 'course': 1, 'foreign': 1, 'o/d': 1}
 {'income_category': None, 'gone_category': 'Sessiyaya gəlməmiş və universitetlə əlaqəni kəsmiş', 'course': 5, 'foreign': 1, 'o/d': 1}
-{'income_category': None, 'gone_category': 'Öz ərizəsi əsasında', 'course': 1, 'foreign': 1, 'o/d': 1}
+{'income_category': None, 'gone_category': 'Öz ərizəsi əsasında', 'course': 1, 'foreign': 1, 'o/d': 1}INFO:waitress:Serving on http://0.0.0.0:5000
+WARNING:waitress.queue:Task queue depth is 1
+WARNING:waitress.queue:Task queue depth is 1
+WARNING:waitress.queue:Task queue depth is 1
+INFO:waitress:Serving on http://[::1]:5000
+INFO:waitress:Serving on http://127.0.0.1:5000
+WARNING:waitress.queue:Task queue depth is 1
+WARNING:waitress.queue:Task queue depth is 2
+WARNING:waitress.queue:Task queue depth is 1
+WARNING:waitress.queue:Task queue depth is 2
+WARNING:waitress.queue:Task queue depth is 1
+INFO:waitress:Serving on http://[::1]:5000
+INFO:waitress:Serving on http://127.0.0.1:5000
+Terminated
+INFO:waitress:Serving on http://[::1]:5000
+INFO:waitress:Serving on http://127.0.0.1:5000
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+SELECT 
+                            std.course,
+                            SUM(CASE
+                                    WHEN foreign_student = FALSE THEN 1
+                                    ELSE 0
+                                END) AS normal,
+                                SUM(CASE
+                                    WHEN foreign_student = TRUE THEN 1
+                                    ELSE 0
+                                END) AS xarici
+                        FROM
+                            xarici_diller.students as std
+                                LEFT JOIN
+                            examsystem.contingent_movements AS cm ON cm.student_id = std.id
+                                JOIN
+                            examsystem.professions AS pr on pr.id=std.profession_id
+                        WHERE
+                            educationYear = '2023/2024'
+                                AND semestr = 'YAZ'
+                                --  AND std.profession_id=0
+                                AND pr.sectors=1
+                                -- AND ((cm.date>='2024-03-01'  
+                                -- OR cm.date IS NULL)
+                                -- OR (cm.date <= '2024-03-31'
+                                -- AND cm.incomers_action IS NOT NULL))
+                                AND (((cm.date>='2024-03-01' and cm.date<='2024-03-01' and cm.goners_action in (1, 2, 3, 4) )
+                                or (cm.date >= '2024-03-01' and cm.date<='2024-03-31' and cm.goners_action is not null)
+                                or (cm.date <= '2024-03-01' and cm.incomers_action is not null)
+                                -- AND cm.goners_action IS NOT NULL
+                                ) or cm.date IS NULL)
+                        GROUP BY course , `o/d`
+                        ORDER BY course, `o/d` desc;
+                    
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+
+                        SELECT 
+                            std.course,
+                            SUM(CASE
+                                WHEN foreign_student = FALSE THEN 1
+                                ELSE 0
+                            END) AS normal,
+                            SUM(CASE
+                                WHEN foreign_student = TRUE THEN 1
+                                ELSE 0
+                            END) AS xarici,
+                            SUM(CASE
+                                WHEN
+                                    gender = TRUE
+                                        AND foreign_student = FALSE
+                                THEN
+                                    1
+                                ELSE 0
+                            END) AS yerli_kisi,
+                            SUM(CASE
+                                WHEN
+                                    gender = FALSE
+                                        AND foreign_student = FALSE
+                                THEN
+                                    1
+                                ELSE 0
+                            END) AS yerli_qadin,
+                            SUM(CASE
+                                WHEN
+                                    gender = TRUE
+                                        AND foreign_student = True
+                                THEN
+                                    1
+                                ELSE 0
+                            END) AS xarici_kisi,
+                            SUM(CASE
+                                WHEN
+                                    gender = FALSE
+                                        AND foreign_student = True
+                                THEN
+                                    1
+                                ELSE 0
+                            END) AS xarici_qadin
+                        FROM
+                            xarici_diller.students AS std
+                                LEFT JOIN
+                            examsystem.contingent_movements AS cm ON cm.student_id = std.id
+                                JOIN
+                            examsystem.professions AS pr on pr.id=std.profession_id
+                        WHERE
+                            educationYear = '2023/2024'
+                                AND semestr = 'YAZ'
+                                AND pr.sectors = 1
+                                --  AND std.profession_id=0
+                                AND is_active = 1
+                                -- AND ((cm.date >= '2024-03-01'
+                                -- OR cm.date IS NULL)
+                                -- OR (cm.date <= '2024-03-31'
+                                -- AND cm.incomers_action IS NOT NULL))
+                                
+                                
+                        GROUP BY course , `o/d`
+                        ORDER BY course , `o/d` DESC;
+                    
+
+                        SELECT 
+                            std.course,
+                            SUM(CASE
+                                WHEN foreign_student = False and cm.goners_action IN (1, 2, 3, 4) THEN 1
+                                ELSE 0
+                            END) AS `ak.mez`,
+                            SUM(CASE
+                                WHEN
+                                    foreign_student = TRUE
+                                        AND cm.goners_action IN (1 , 2, 3, 4)
+                                THEN
+                                    1
+                                ELSE 0
+                            END) AS xarici
+                        FROM
+                            xarici_diller.students AS std
+                                LEFT JOIN
+                            examsystem.contingent_movements AS cm ON cm.student_id = std.id
+                                JOIN
+                            examsystem.professions AS pr on pr.id=std.profession_id
+                        WHERE 
+                            pr.sectors = 1
+                            AND cm.faculty_id = 5
+                            --  AND std.profession_id=0
+                        GROUP BY course , `o/d`
+                        ORDER BY course , `o/d` DESC;
+                    
+[+] Disconnected successfully from ramil@localhost:3306
+{1: {'odenisli': 62, 'xarici': 0}, 2: {'odenisli': 64, 'xarici': 0}, 3: {'odenisli': 93, 'xarici': 0}, 4: {'odenisli': 101, 'xarici': 1}}
+{1: {'odenisli': 63, 'xarici': 0, 'odenisli_kisi': 0, 'odenisli_qadin': 63, 'xarici_odenisli_kisi': 0, 'xarici_odenisli_qadin': 0}, 2: {'odenisli': 64, 'xarici': 0, 'odenisli_kisi': 0, 'odenisli_qadin': 64, 'xarici_odenisli_kisi': 0, 'xarici_odenisli_qadin': 0}, 3: {'odenisli': 93, 'xarici': 0, 'odenisli_kisi': 0, 'odenisli_qadin': 93, 'xarici_odenisli_kisi': 0, 'xarici_odenisli_qadin': 0}, 4: {'odenisli': 101, 'xarici': 1, 'odenisli_kisi': 0, 'odenisli_qadin': 101, 'xarici_odenisli_kisi': 0, 'xarici_odenisli_qadin': 1}}ERROR:flasktest:Exception on /contingent [POST]
+Traceback (most recent call last):
+  File "/var/www/contingent/.venv/lib/python3.9/site-packages/flask/app.py", line 1463, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/var/www/contingent/.venv/lib/python3.9/site-packages/flask/app.py", line 872, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/var/www/contingent/.venv/lib/python3.9/site-packages/flask/app.py", line 870, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/var/www/contingent/.venv/lib/python3.9/site-packages/flask/app.py", line 855, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/var/www/contingent/.venv/lib/python3.9/site-packages/flask_login/utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "/var/www/contingent/flasktest/route.py", line 300, in contingent_view
+    contingent = Contingent(
+  File "/var/www/contingent/flasktest/modules/module.py", line 63, in __init__
+    data = self.get_contingent_movements()
+  File "/var/www/contingent/flasktest/modules/module.py", line 759, in get_contingent_movements
+    "course": student_result[0][4],
+IndexError: list index out of range
+WARNING:waitress.queue:Task queue depth is 1
+WARNING:waitress.queue:Task queue depth is 2
+
+{1: {'odenisli_akmez': 0, 'xarici_akmez': 0, 'odenissiz_akmez': 0}, 2: {'odenisli_akmez': 0, 'xarici_akmez': 0, 'odenissiz_akmez': 0}}
+==== {'odenisli_akmez': 0, 'xarici_akmez': 0, 'odenissiz_akmez': 0}
+[+] Connected successfully to ramil@localhost:3306
+
+                    SELECT 
+                        cm.student_id, ci.category_name, cg.category_name
+                    FROM
+                        examsystem.contingent_movements AS cm
+                            LEFT JOIN
+                        examsystem.contingent_incomers AS ci ON ci.id = cm.incomers_action
+                            LEFT JOIN
+                        examsystem.contingent_goners AS cg ON cg.id = cm.goners_action
+                            JOIN
+                        examsystem.professions AS pr on pr.id=cm.profession_id
+
+                    WHERE
+                        cm.faculty_id = 5 AND (date >= '2024-03-01' and date <= "2024-03-31")
+                        AND pr.sectors=1
+                        --  AND cm.profession_id=0
+                    
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+SELECT 
+                            std.course,
+                            SUM(CASE
+                                    WHEN foreign_student = FALSE THEN 1
+                                    ELSE 0
+                                END) AS normal,
+                                SUM(CASE
+                                    WHEN foreign_student = TRUE THEN 1
+                                    ELSE 0
+                                END) AS xarici
+                        FROM
+                            med.students as std
+                                LEFT JOIN
+                            examsystem.contingent_movements AS cm ON cm.student_id = std.id
+                                JOIN
+                            examsystem.professions AS pr on pr.id=std.profession_id
+                        WHERE
+                            educationYear = '2023/2024'
+                                AND semestr = 'YAZ'
+                                --  AND std.profession_id=0
+                                AND pr.sectors=1
+                                -- AND ((cm.date>='2024-03-01'  
+                                -- OR cm.date IS NULL)
+                                -- OR (cm.date <= '2024-05-01'
+                                -- AND cm.incomers_action IS NOT NULL))
+                                AND (((cm.date>='2024-03-01' and cm.date<='2024-03-01' and cm.goners_action in (1, 2, 3, 4) )
+                                or (cm.date >= '2024-03-01' and cm.date<='2024-05-01' and cm.goners_action is not null)
+                                or (cm.date <= '2024-03-01' and cm.incomers_action is not null)
+                                -- AND cm.goners_action IS NOT NULL
+                                ) or cm.date IS NULL)
+                        GROUP BY course , `o/d`
+                        ORDER BY course, `o/d` desc;
+                    
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+
+                        SELECT 
+                            std.course,
+                            SUM(CASE
+                                WHEN foreign_student = FALSE THEN 1
+                                ELSE 0
+                            END) AS normal,
+                            SUM(CASE
+                                WHEN foreign_student = TRUE THEN 1
+                                ELSE 0
+                            END) AS xarici,
+                            SUM(CASE
+                                WHEN
+                                    gender = TRUE
+                                        AND foreign_student = FALSE
+                                THEN
+                                    1
+                                ELSE 0
+                            END) AS yerli_kisi,
+                            SUM(CASE
+                                WHEN
+                                    gender = FALSE
+                                        AND foreign_student = FALSE
+                                THEN
+                                    1
+                                ELSE 0
+                            END) AS yerli_qadin,
+                            SUM(CASE
+                                WHEN
+                                    gender = TRUE
+                                        AND foreign_student = True
+                                THEN
+                                    1
+                                ELSE 0
+                            END) AS xarici_kisi,
+                            SUM(CASE
+                                WHEN
+                                    gender = FALSE
+                                        AND foreign_student = True
+                                THEN
+                                    1
+                                ELSE 0
+                            END) AS xarici_qadin
+                        FROM
+                            med.students AS std
+                                LEFT JOIN
+                            examsystem.contingent_movements AS cm ON cm.student_id = std.id
+                                JOIN
+                            examsystem.professions AS pr on pr.id=std.profession_id
+                        WHERE
+                            educationYear = '2023/2024'
+                                AND semestr = 'YAZ'
+                                AND pr.sectors = 1
+                                --  AND std.profession_id=0
+                                AND is_active = 1
+                                -- AND ((cm.date >= '2024-03-01'
+                                -- OR cm.date IS NULL)
+                                -- OR (cm.date <= '2024-05-01'
+                                -- AND cm.incomers_action IS NOT NULL))
+                                
+                                
+                        GROUP BY course , `o/d`
+                        ORDER BY course , `o/d` DESC;
+                    
+
+                        SELECT 
+                            std.course,
+                            SUM(CASE
+                                WHEN foreign_student = False and cm.goners_action IN (1, 2, 3, 4) THEN 1
+                                ELSE 0
+                            END) AS `ak.mez`,
+                            SUM(CASE
+                                WHEN
+                                    foreign_student = TRUE
+                                        AND cm.goners_action IN (1 , 2, 3, 4)
+                                THEN
+                                    1
+                                ELSE 0
+                            END) AS xarici
+                        FROM
+                            med.students AS std
+                                LEFT JOIN
+                            examsystem.contingent_movements AS cm ON cm.student_id = std.id
+                                JOIN
+                            examsystem.professions AS pr on pr.id=std.profession_id
+                        WHERE 
+                            pr.sectors = 1
+                            AND cm.faculty_id = 10
+                            --  AND std.profession_id=0
+                        GROUP BY course , `o/d`
+                        ORDER BY course , `o/d` DESC;
+                    
+[+] Disconnected successfully from ramil@localhost:3306
+{1: {'odenisli': 285, 'xarici': 207}, 2: {'odenisli': 195, 'xarici': 228}, 3: {'odenisli': 193, 'xarici': 175}, 4: {'odenisli': 135, 'xarici': 138}, 5: {'odenisli': 101, 'xarici': 65}, 6: {'odenisli': 36, 'xarici': 5}}
+{1: {'odenisli': 285, 'xarici': 207, 'odenisli_kisi': 26, 'odenisli_qadin': 259, 'xarici_odenisli_kisi': 110, 'xarici_odenisli_qadin': 97}, 2: {'odenisli': 195, 'xarici': 227, 'odenisli_kisi': 16, 'odenisli_qadin': 179, 'xarici_odenisli_kisi': 134, 'xarici_odenisli_qadin': 93}, 3: {'odenisli': 193, 'xarici': 175, 'odenisli_kisi': 40, 'odenisli_qadin': 153, 'xarici_odenisli_kisi': 121, 'xarici_odenisli_qadin': 54}, 4: {'odenisli': 135, 'xarici': 138, 'odenisli_kisi': 34, 'odenisli_qadin': 101, 'xarici_odenisli_kisi': 50, 'xarici_odenisli_qadin': 88}, 5: {'odenisli': 101, 'xarici': 65, 'odenisli_kisi': 13, 'odenisli_qadin': 88, 'xarici_odenisli_kisi': 40, 'xarici_odenisli_qadin': 25}, 6: {'odenisli': 36, 'xarici': 5, 'odenisli_kisi': 0, 'odenisli_qadin': 36, 'xarici_odenisli_kisi': 1, 'xarici_odenisli_qadin': 4}}
+{1: {'odenisli_akmez': 0, 'xarici_akmez': 2}, 2: {'odenisli_akmez': 0, 'xarici_akmez': 2}, 3: {'odenisli_akmez': 0, 'xarici_akmez': 1}, 4: {'odenisli_akmez': 1, 'xarici_akmez': 1}, 5: {'odenisli_akmez': 0, 'xarici_akmez': 0}, 6: {'odenisli_akmez': 0, 'xarici_akmez': 0}}
+==== {'odenisli_akmez': 1, 'xarici_akmez': 6, 'odenissiz_akmez': 0}
+[+] Connected successfully to ramil@localhost:3306
+
+                    SELECT 
+                        cm.student_id, ci.category_name, cg.category_name
+                    FROM
+                        examsystem.contingent_movements AS cm
+                            LEFT JOIN
+                        examsystem.contingent_incomers AS ci ON ci.id = cm.incomers_action
+                            LEFT JOIN
+                        examsystem.contingent_goners AS cg ON cg.id = cm.goners_action
+                            JOIN
+                        examsystem.professions AS pr on pr.id=cm.profession_id
+
+                    WHERE
+                        cm.faculty_id = 10 AND (date >= '2024-03-01' and date <= "2024-05-01")
+                        AND pr.sectors=1
+                        --  AND cm.profession_id=0
+                    
+{'income_category': None, 'gone_category': 'Ailə vəz ilə əlaqədar ak.məz', 'course': 2, 'foreign': 1, 'o/d': 1}
+[+] Disconnected successfully from ramil@localhost:3306
+{'Ailə vəz ilə əlaqədar ak.məz': {2: {'odenisli': 0, 'odenissiz': 0, 'xarici': 1}}}
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+SELECT 
+                            std.course,
+                            SUM(CASE
+                                    WHEN foreign_student = FALSE THEN 1
+                                    ELSE 0
+                                END) AS normal,
+                                SUM(CASE
+                                    WHEN foreign_student = TRUE THEN 1
+                                    ELSE 0
+                                END) AS xarici
+                        FROM
+                            xarici_diller.students as std
+                                LEFT JOIN
+                            examsystem.contingent_movements AS cm ON cm.student_id = std.id
+                                JOIN
+                            examsystem.professions AS pr on pr.id=std.profession_id
+                        WHERE
+                            educationYear = '2023/2024'
+                                AND semestr = 'YAZ'
+                                --  AND std.profession_id=0
+                                AND pr.sectors=1
+                                -- AND ((cm.date>='2024-04-01'  
+                                -- OR cm.date IS NULL)
+                                -- OR (cm.date <= '2024-04-30'
+                                -- AND cm.incomers_action IS NOT NULL))
+                                AND (((cm.date>='2024-04-01' and cm.date<='2024-04-01' and cm.goners_action in (1, 2, 3, 4) )
+                                or (cm.date >= '2024-04-01' and cm.date<='2024-04-30' and cm.goners_action is not null)
+                                or (cm.date <= '2024-04-01' and cm.incomers_action is not null)
+                                -- AND cm.goners_action IS NOT NULL
+                                ) or cm.date IS NULL)
+                        GROUP BY course , `o/d`
+                        ORDER BY course, `o/d` desc;
+                    
+[+] Disconnected successfully from ramil@localhost:3306
+[+] Connected successfully to ramil@localhost:3306
+
+                        SELECT 
+                            std.course,
+                            SUM(CASE
+                                WHEN foreign_student = FALSE THEN 1
+                                ELSE 0
+                            END) AS normal,
+                            SUM(CASE
+                                WHEN foreign_student = TRUE THEN 1
+                                ELSE 0
+                            END) AS xarici,
+                            SUM(CASE
+                                WHEN
+                                    gender = TRUE
+                                        AND foreign_student = FALSE
+                                THEN
+                                    1
+                                ELSE 0
+                            END) AS yerli_kisi,
+                            SUM(CASE
+                                WHEN
+                                    gender = FALSE
+                                        AND foreign_student = FALSE
+                                THEN
+                                    1
+                                ELSE 0
+                            END) AS yerli_qadin,
+                            SUM(CASE
+                                WHEN
+                                    gender = TRUE
+                                        AND foreign_student = True
+                                THEN
+                                    1
+                                ELSE 0
+                            END) AS xarici_kisi,
+                            SUM(CASE
+                                WHEN
+                                    gender = FALSE
+                                        AND foreign_student = True
+                                THEN
+                                    1
+                                ELSE 0
+                            END) AS xarici_qadin
+                        FROM
+                            xarici_diller.students AS std
+                                LEFT JOIN
+                            examsystem.contingent_movements AS cm ON cm.student_id = std.id
+                                JOIN
+                            examsystem.professions AS pr on pr.id=std.profession_id
+                        WHERE
+                            educationYear = '2023/2024'
+                                AND semestr = 'YAZ'
+                                AND pr.sectors = 1
+                                --  AND std.profession_id=0
+                                AND is_active = 1
+                                -- AND ((cm.date >= '2024-04-01'
+                                -- OR cm.date IS NULL)
+                                -- OR (cm.date <= '2024-04-30'
+                                -- AND cm.incomers_action IS NOT NULL))
+                                
+                                
+                        GROUP BY course , `o/d`
+                        ORDER BY course , `o/d` DESC;
+                    
+
+                        SELECT 
+                            std.course,
+                            SUM(CASE
+                                WHEN foreign_student = False and cm.goners_action IN (1, 2, 3, 4) THEN 1
+                                ELSE 0
+                            END) AS `ak.mez`,
+                            SUM(CASE
+                                WHEN
+                                    foreign_student = TRUE
+                                        AND cm.goners_action IN (1 , 2, 3, 4)
+                                THEN
+                                    1
+                                ELSE 0
+                            END) AS xarici
+                        FROM
+                            xarici_diller.students AS std
+                                LEFT JOIN
+                            examsystem.contingent_movements AS cm ON cm.student_id = std.id
+                                JOIN
+                            examsystem.professions AS pr on pr.id=std.profession_id
+                        WHERE 
+                            pr.sectors = 1
+                            AND cm.faculty_id = 5
+                            --  AND std.profession_id=0
+                        GROUP BY course , `o/d`
+                        ORDER BY course , `o/d` DESC;
+                    

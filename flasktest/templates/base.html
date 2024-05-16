@@ -95,10 +95,16 @@
                                     </div>
                                 </li>
                             </ul>
+
+
                         </div>
 
                         <div class="navbar-nav">
                             {% if current_user.is_authenticated %}
+                            {% if current_user.is_superuser %}
+                            <a class="nav-item nav-link"
+                                href="{{url_for('users')}}">İstifadəçilər</a>
+                            {% endif %}
                             <a class="nav-item nav-link"
                                 href="{{url_for('account')}}">Hesab</a>
                             <a class="nav-item nav-link"

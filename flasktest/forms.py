@@ -43,19 +43,24 @@ class UpdateAccountForm(FlaskForm):
         "İstifadəçi adı", validators=[DataRequired(), Length(min=2, max=20)]
     )
     email = StringField("Email", validators=[DataRequired(), Email()])
+    password = StringField("Password", validators=[DataRequired()])
     image = FileField("Profil Şəkli", validators=[FileAllowed(["jpg", "png"])])
     submit = SubmitField("Yenilə")
+
+    def __init__(self, *args, **kwargs):
+        self.user_id = kwargs.pop("user_id", None)
+        super(UpdateAccountForm, self).__init__(*args, **kwargs)
 
     def validate_username(self, username):
         if current_user.username != username.data:
             user = User.query.filter_by(username=username.data).first()
-            if user:
+            if user and user.id != self.user_id:
                 raise ValidationError("Bu istifadəçi adı hal-hazırda istifadə olunur.")
 
     def validate_email(self, email):
         if current_user.email != email.data:
             user = User.query.filter_by(email=email.data).first()
-            if user:
+            if user and user.id != self.user_id:
                 raise ValidationError("Bu mail ünvanı hal-hazırda istifadə olunur.")
 
 

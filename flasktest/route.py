@@ -1,5 +1,5 @@
 import datetime
-from flask import Flask, render_template, url_for, request, flash, redirect
+from flask import Flask, abort, render_template, url_for, request, flash, redirect
 from flasktest.forms import (
     RegistrationForm,
     LoginForm,
@@ -19,6 +19,8 @@ import secrets
 import os
 import io
 from flasktest.modules.module import Contingent, MovementReport, Students
+
+# from flask_bcrypt import generate_password_hash
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -65,6 +67,44 @@ def index():
     return render_template("home.html", results=results)
 
 
+@app.route("/users", methods=["GET", "POST"])
+@login_required
+def users():
+    # if request.method == "POST":
+    #     contingent_id = request.form["number"]
+    #     r = requests.get(
+    #         f"https://api.ndu.edu.az/download-contingent-file?commandment_id={contingent_id}"
+    #     )
+
+    #     return send_file(
+    #         io.BytesIO(r.content),
+    #         mimetype="application/pdf",
+    #     )
+
+    connection = connect_db(database)
+    with connection.cursor() as cursor:
+        query = """SELECT id, faculty_name from examsystem.faculty_names;
+                    """
+        cursor.execute(query)
+        faculty_names = cursor.fetchall()
+        faculty_names = dict(faculty_names)
+    disconnect_db(connection, database)
+
+    # if request.args.get("export") == "True":
+    #     report_obj = MovementReport(results, current_user.faculty_id)
+
+    #     report_obj.save("report")
+    #     return send_file(
+    #         "../excel-files/report.xlsx",
+    #         as_attachment=True,
+    #         download_name="report.xlsx",
+    #         mimetype="application/excel",
+    #     )
+
+    users = User.query.all()
+    return render_template("users.html", users=users, faculty_names=faculty_names)
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
@@ -100,10 +140,29 @@ def logout():
     return redirect(url_for("login"))
 
 
+@app.route("/delete-user/<int:pk>")
+@login_required
+def delete_user(pk):
+    if current_user.faculty_id != 0:
+        return redirect(url_for("index"))
+    if not current_user.is_superuser:
+        return redirect(url_for("index"))
+
+    user = User.query.get(pk)
+    if not user:
+        abort(404)  # Or handle the case where user is not found
+    # Delete the user or perform any necessary operations here
+    db.session.delete(user)
+    db.session.commit()
+    return redirect(url_for("users"))
+
+
 @app.route("/register", methods=["GET", "POST"])
 @login_required
 def register():
     if current_user.faculty_id != 0:
+        return redirect(url_for("index"))
+    if not current_user.is_superuser:
         return redirect(url_for("index"))
     form = RegistrationForm()
 
@@ -333,7 +392,7 @@ def save_picture(form_picture):
 def account():
     username = current_user.username
     image_file = url_for("static", filename="profile_pics/" + current_user.image)
-    form = UpdateAccountForm()
+    form = UpdateAccountForm(user_id=current_user.id)
     if form.validate_on_submit():
         if form.image.data:
             picture_file = save_picture(form.image.data)
@@ -341,13 +400,67 @@ def account():
 
         current_user.username = form.username.data
         current_user.email = form.email.data
+        # Check if the user provided a new password
+        if form.password.data:
+            # Hash the new password
+            hashed_password = bcrypt.generate_password_hash(form.password.data).decode(
+                "utf-8"
+            )
+            current_user.password = hashed_password
         db.session.commit()
         flash("Hesab uğurla yeniləndi!", "success")
         return redirect(url_for("account"))
     elif request.method == "GET":
         form.username.data = current_user.username
         form.email.data = current_user.email
+        form.password.data = current_user.password
 
     return render_template(
         "account.html", title=f"Hesab {username}", image_file=image_file, form=form
+    )
+
+
+@app.route("/edit-account/<int:pk>", methods=["GET", "POST"])
+@login_required
+def edit_account(pk):
+    if current_user.faculty_id != 0:
+        return redirect(url_for("index"))
+    if not current_user.is_superuser:
+        return redirect(url_for("index"))
+
+    user = User.query.get(pk)
+    if not user:
+        abort(404)
+
+    username = user.username
+    image_file = url_for("static", filename="profile_pics/" + user.image)
+    form = UpdateAccountForm(user_id=user.id)
+    if form.validate_on_submit():
+        if form.image.data:
+            picture_file = save_picture(form.image.data)
+            user.image = picture_file
+
+        user.username = form.username.data
+        user.email = form.email.data
+        # Check if the user provided a new password
+        if form.password.data and form.password.data != user.password:
+            # Hash the new password
+            hashed_password = bcrypt.generate_password_hash(form.password.data).decode(
+                "utf-8"
+            )
+            user.password = hashed_password
+        db.session.commit()
+        flash("Hesab uğurla yeniləndi!", "success")
+        return redirect(url_for("edit_account", pk=user.id))
+    elif request.method == "GET":
+        form.username.data = user.username
+        form.email.data = user.email
+        form.password.data = user.password
+
+    return render_template(
+        "edit_account.html",
+        title=f"Hesab {username}",
+        image_file=image_file,
+        form=form,
+        user=user,
     )
