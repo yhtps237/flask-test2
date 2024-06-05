@@ -3,6 +3,7 @@ from flask import Flask, abort, render_template, url_for, request, flash, redire
 from flasktest.forms import (
     RegistrationForm,
     LoginForm,
+    StudentPhoneNumber,
     UpdateAccountForm,
     ContingentForm,
     StudentsForm,
@@ -208,9 +209,10 @@ def about():
 
 
 @app.route("/get_professions")
-@login_required
+# @login_required
 def get_professions():
     faculty_id = request.args.get("faculty_name", type=int)
+    print("faculty_id", faculty_id)
     connection = connect_db(database)
     with connection.cursor() as cursor:
         query = f"""
@@ -231,6 +233,49 @@ def get_professions():
         profession_names.insert(0, (0, "---"))
     disconnect_db(connection, database)
     return render_template("professions.html", profession_names=profession_names)
+
+
+@app.route("/get_students")
+# @login_required
+def get_students():
+    faculty_id = request.args.get("faculty_name", type=int)
+    profession_id = request.args.get("profession_name", type=int)
+    course_name = request.args.get("course_name", type=int)
+    connection = connect_db(database)
+    with connection.cursor() as cursor:
+        query = f"""
+                    SELECT 
+                        db_name
+                    FROM examsystem.faculty_names
+                    WHERE 
+                        id={faculty_id};
+                """
+        cursor.execute(query)
+        db_name = cursor.fetchall()[0][0]
+        query = f"""
+                    SELECT education_year, semestr FROM examsystem.options;
+                """
+        cursor.execute(query)
+        result = cursor.fetchall()
+        year = result[0][0]
+        semestr = result[0][1]
+
+        query = f"""
+                    SELECT 
+                        id, student_name
+                    FROM {db_name}.students
+                    WHERE 
+                        profession_id={profession_id}
+                        AND course={course_name}
+                        AND educationYear='{year}'
+                        AND semestr='{semestr}'
+                        ;
+                """
+        cursor.execute(query)
+        students = cursor.fetchall()
+
+    disconnect_db(connection, database)
+    return render_template("student_names.html", students=students)
 
 
 @app.route("/contingent", methods=["GET", "POST"])
@@ -464,3 +509,128 @@ def edit_account(pk):
         form=form,
         user=user,
     )
+
+
+@app.route("/tələbə-qeydiyyat", methods=["GET", "POST"])
+def add_student_phone_number():
+    form = StudentPhoneNumber()
+
+    # ---------------------------------------------------------
+    connection = connect_db(database)
+    faculty_id = 2
+    if request.method == "POST":
+        faculty_id = form.faculty_name.data
+
+    with connection.cursor() as cursor:
+        query = """SELECT id, faculty_name from examsystem.faculty_names;
+                """
+        cursor.execute(query)
+        faculty_names = cursor.fetchall()
+
+        query = f"""
+                    SELECT 
+                        pr.id, concat(pr.profession_name, " | ", sector_name)
+                    FROM 
+                        examsystem.professions as pr
+                    JOIN
+                        examsystem.sectors as s
+                    ON
+                        s.id=pr.sectors
+                    WHERE 
+                        faculty_id={faculty_id}
+                """
+        cursor.execute(query)
+        profession_names = cursor.fetchall()
+
+        query = f"""
+                    SELECT 
+                        db_name
+                    FROM examsystem.faculty_names
+                    WHERE 
+                        id={faculty_id};
+                """
+        cursor.execute(query)
+        db_name = cursor.fetchall()[0][0]
+        query = f"""
+                    SELECT education_year, semestr FROM examsystem.options;
+                """
+        cursor.execute(query)
+        result = cursor.fetchall()
+        year = result[0][0]
+        semestr = result[0][1]
+
+        query = f"""
+                    SELECT 
+                        id, student_name
+                    FROM {db_name}.students
+                    WHERE 
+                    educationYear='{year}'
+                        AND semestr='{semestr}'
+                        ;
+                """
+        cursor.execute(query)
+        students = cursor.fetchall()
+
+    disconnect_db(connection, database)
+    form.faculty_name.choices = faculty_names
+    profession_names.insert(0, (0, "---"))
+    form.profession_name.choices = profession_names
+
+    # form.eduyear.choices = years
+    # form.semestr.choices = [("PAYIZ", "PAYIZ"), ("YAZ", "YAZ")]
+    form.course_name.choices = [
+        (0, "---"),
+        ("1", "1"),
+        ("2", "2"),
+        ("3", "3"),
+        ("4", "4"),
+        ("5", "5"),
+        ("6", "6"),
+    ]
+    students.insert(0, (0, "---"))
+
+    form.student_name.choices = students
+
+    # ---------------------------------------------------------
+
+    if request.method == "POST":
+        if form.validate_on_submit():
+            faculty_id = form.faculty_name.data
+            profession_id = form.profession_name.data
+            course_name = form.course_name.data
+            student_name = form.student_name.data
+            email = form.email.data
+            phone_number = form.phone_number.data
+            phone_number = "".join(phone_number.split("-"))
+            connection = connect_db(database)
+            with connection.cursor() as cursor:
+                query = f"""
+                            SELECT 
+                                db_name
+                            FROM examsystem.faculty_names
+                            WHERE 
+                                id={faculty_id};
+                        """
+                cursor.execute(query)
+                db_name = cursor.fetchall()[0][0]
+
+                query = f"""
+                            {db_name}.students 
+                            SET phone_number='{phone_number}',
+                            email='{email}',
+                            where id={student_name};
+                        """
+
+                # query = f"""
+                #             SELECT * FROM {db_name}.students where id={student_name};
+                #         """
+                cursor.execute(query)
+
+            disconnect_db(connection, database)
+
+            flash("Form submitted successfully!", "success")
+            # return redirect(request.url)
+            return redirect(request.referrer or url_for("add_student_phone_number"))
+        # else:
+        #     print(form.errors)
+    return render_template("student_number.html", title="Tələbə", form=form)

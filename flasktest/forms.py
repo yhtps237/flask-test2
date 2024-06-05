@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
 from wtforms import (
     StringField,
+    IntegerField,
     PasswordField,
     SubmitField,
     BooleanField,
@@ -79,6 +80,67 @@ class ContingentForm(FlaskForm):
     )
 
     submit = SubmitField("Çap et")
+
+
+class StudentPhoneNumber(FlaskForm):
+    faculty_name = SelectField("Fakültə Adı", validators=[DataRequired()])
+    profession_name = SelectField("İxtisas Adı", coerce=int)
+    course_name = SelectField("Kurs", coerce=int)
+    student_name = SelectField("Tələbə adı", validators=[DataRequired()])
+    email = StringField("Email", validators=[DataRequired(), Email()])
+
+    phone_number = StringField(
+        "Telefon nömrəsi",
+        validators=[
+            DataRequired(),
+        ],
+        description="Telefon nömrəsin bu formada daxil edin: 994-xx-xxx-xx-xx",
+    )
+
+    submit = SubmitField("Yaddaşa ver")
+
+    def validate_profession_name(self, profession_name):
+        print(type(profession_name.data), profession_name.data)
+        if profession_name.data == 0:
+            raise ValidationError("Zəhmət olmasa ixtisası seçin.")
+
+    def validate_course_name(self, course_name):
+        print(type(course_name.data), course_name.data)
+        if course_name.data == 0:
+            raise ValidationError("Zəhmət olmasa kursu seçin.")
+
+    def validate_student_name(self, student_name):
+        print(type(student_name.data), student_name.data)
+        if student_name.data == 0:
+            raise ValidationError("Zəhmət olmasa tələbə adınızı seçin.")
+
+    def validate_phone_number(self, phone_number: str):
+
+        if not phone_number.data.startswith("994"):
+            raise ValidationError("Zəhmət olmasa nömrənin əvvəlini 994 ilə yazın.")
+
+        if not phone_number.data.count("-") == 4:
+            raise ValidationError("Zəhmət olmasa nömrəni düzgün yazın.")
+
+        if len(phone_number.data) > 16:
+            raise ValidationError("Zəhmət olmasa nömrəni düzgün yazın.")
+
+        parts = phone_number.data.split("-")
+
+        if not len(parts[1]) == 2:
+            raise ValidationError("Zəhmət olmasa nömrəni düzgün yazın.")
+
+        if not len(parts[2]) == 3:
+            raise ValidationError("Zəhmət olmasa nömrəni düzgün yazın.")
+        if not len(parts[3]) == 2:
+            raise ValidationError("Zəhmət olmasa nömrəni düzgün yazın.")
+        if not len(parts[4]) == 2:
+            raise ValidationError("Zəhmət olmasa nömrəni düzgün yazın.")
+
+        # if current_user.email != email.data:
+        #     user = User.query.filter_by(email=email.data).first()
+        #     if user and user.id != self.user_id:
+        #         raise ValidationError("Bu mail ünvanı hal-hazırda istifadə olunur.")
 
 
 class StudentsForm(FlaskForm):

@@ -2,8 +2,8 @@
     "database": {
         "hostname": "localhost",
         "port": 3306,
-        "username": "ramil",
-        "password": "OlDschool$#@!237"
+        "username": "orion",
+        "password": "orion"
     },
     "host": "localhost",
     "port": 3306,
