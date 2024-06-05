@@ -615,9 +615,9 @@ def add_student_phone_number():
                 db_name = cursor.fetchall()[0][0]
 
                 query = f"""
-                            {db_name}.students 
+                            UPDATE {db_name}.students 
                             SET phone_number='{phone_number}',
-                            email='{email}',
+                            email='{email}'
                             where id={student_name};
                         """
 
@@ -625,10 +625,10 @@ def add_student_phone_number():
                 #             SELECT * FROM {db_name}.students where id={student_name};
                 #         """
                 cursor.execute(query)
-
+                connection.commit()
             disconnect_db(connection, database)
 
-            flash("Form submitted successfully!", "success")
+            flash("Uğurla əlavə edildi.", "success")
             # return redirect(request.url)
             return redirect(request.referrer or url_for("add_student_phone_number"))
         # else:
