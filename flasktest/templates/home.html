@@ -44,6 +44,7 @@
                             <th scope="col">Kateqori</th>
                             <th scope="col">Tarix</th>
                             <th scope="col">Əmr</th>
+                            <th scope="col">Əməliyyatlar</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -72,6 +73,7 @@
                                         type="submit">{{row[7]}}</button>
                                 </form>
                             </td>
+                            <td><a href="{{ url_for('delete_movement', pk=row[9]) }}">Sil</a></td>
                         </tr>
                         {% endif %}
                         {% endfor %}

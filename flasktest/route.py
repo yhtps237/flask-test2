@@ -635,3 +635,22 @@ def add_student_phone_number():
         # else:
         #     print(form.errors)
     return render_template("student_number.html", title="Tələbə", form=form)
+
+
+@app.route("/delete-movement/<int:pk>", methods=["GET"])
+@login_required
+def delete_movement(pk):
+    # current_user.faculty_id
+    # ---------------------------------------------------------
+    connection = connect_db(database)
+    with connection.cursor() as cursor:
+
+        query = f"""DELETE from examsystem.contingent_movements
+                    where id={pk};
+                """
+        cursor.execute(query)
+        connection.commit()
+
+    disconnect_db(connection, database)
+    # ---------------------------------------------------------
+    return redirect(url_for("index"))
