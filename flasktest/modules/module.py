@@ -3,6 +3,7 @@ from openpyxl.styles.alignment import Alignment
 from openpyxl.styles import Border, Font, Side
 import openpyxl
 import json
+from flasktest.database import database
 
 
 class Contingent:
@@ -1013,6 +1014,44 @@ class Students:
         ]
         self.ws.append(columns)
         for row in data:
+            self.ws.append(row)
+
+
+class Ejurnal:
+    def __init__(self, faculty_name, start_date, end_date) -> None:
+        self.faculty_name = faculty_name
+        self.start_date = start_date
+        self.end_date = end_date
+        self.attendances = None
+        self.workbook = openpyxl.Workbook()
+        self.ws = self.workbook.active
+
+    async def initialize(self):
+        self.attendances = await database.get_attendance(
+            self.faculty_name, self.start_date, self.end_date
+        )
+        self.put_table()
+
+    def save(self, name):
+        self.workbook.save(f"excel-files/{name}.xlsx")
+
+    def put_table(self):
+        columns = [
+            "İxtisas ad",
+            "Kurs ad",
+            "Fənn ad",
+            "Müəllim ad",
+            "Mövzu ad",
+            "Tələbə Ad",
+            "Sərbəst iş",
+            "Kollokvium",
+            "Kurs işi",
+            "Qiymət",
+            "Tipi",
+            "Tarix",
+        ]
+        self.ws.append(columns)
+        for row in self.attendances:
             self.ws.append(row)
 
 

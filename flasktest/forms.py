@@ -82,6 +82,15 @@ class ContingentForm(FlaskForm):
     submit = SubmitField("Çap et")
 
 
+class ContingentForm(FlaskForm):
+    faculty_name = SelectField("Fakültə Adı", validators=[DataRequired()])
+
+    start_date = DateField("Başlama tarixi", validators=[DataRequired()])
+    end_date = DateField("Bitmə tarixi", validators=[DataRequired()])
+
+    submit = SubmitField("Çap et")
+
+
 class StudentPhoneNumber(FlaskForm):
     faculty_name = SelectField("Fakültə Adı", validators=[DataRequired()])
     profession_name = SelectField("İxtisas Adı", coerce=int)

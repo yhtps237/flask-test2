@@ -19,7 +19,8 @@ import requests
 import secrets
 import os
 import io
-from flasktest.modules.module import Contingent, MovementReport, Students
+import asyncio
+from flasktest.modules.module import Contingent, Ejurnal, MovementReport, Students
 
 # from flask_bcrypt import generate_password_hash
 
@@ -416,6 +417,42 @@ def students_view():
         else:
             print(form.errors)
     return render_template("students.html", title="Tələbələr", form=form)
+
+
+@app.route("/ejurnal", methods=["GET", "POST"])
+@login_required
+async def ejurnal_view():
+    # ---------------------------------------------------------
+    form = ContingentForm()
+    faculty_names = await database.get_faculty_names()
+    form.faculty_name.choices = faculty_names
+    # ---------------------------------------------------------
+    # current_year = datetime.datetime.now().year
+
+    if request.method == "POST":
+        if form.validate_on_submit():
+            faculty_id = form.faculty_name.data
+            start_date = form.start_date.data
+            end_date = form.end_date.data
+            ejurnal = Ejurnal(faculty_id, start_date, end_date)
+
+            await ejurnal.initialize()
+
+            ejurnal.save(f"{faculty_id}-students")
+
+            return send_file(
+                f"../excel-files/{faculty_id}-students.xlsx",
+                as_attachment=True,
+                download_name=f"{faculty_id}-students.xlsx",
+                mimetype="application/excel",
+            )
+            return redirect(request.url)
+        else:
+            print(form.errors)
+
+    return render_template(
+        "ejurnal.html", title="Ejurnal", form=form, faculty_names=faculty_names
+    )
 
 
 def save_picture(form_picture):
