@@ -62,7 +62,15 @@ class Database:
         cur = await conn.cursor()
         await cur.execute("SHOW DATABASES;")
         result = await cur.fetchall()
-        result = [(item[0], item[0]) for item in result]
+        filter_out = [
+            "information_schema",
+            "mysql",
+            "performance_schema",
+            "sys",
+            "nduinfo_web",
+            "nduinfo_arxiv",
+        ]
+        result = [(item[0], item[0]) for item in result if item[0] not in filter_out]
         await cur.close()
         conn.close()
         ssh_tunnel.close()
