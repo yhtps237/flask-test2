@@ -69,8 +69,37 @@ class Database:
             "sys",
             "nduinfo_web",
             "nduinfo_arxiv",
+            "nduinfo_eco",
+            "nduinfo_sahiltest",
+            "nduinfo_testucun",
+            "nduinfo_art",
         ]
-        result = [(item[0], item[0]) for item in result if item[0] not in filter_out]
+
+        converter = {
+            "nduinfo_fizika": "Fizika-Riyaziyyat",
+            "nduinfo_tebiet": "Təbiətşünaslıq və Kənd təsərrüfatı",
+            "nduinfo_memarliq": "Memarlıq və Mühəndislik",
+            "nduinfo_xarici_diller": "Xarici dillər",
+            "nduinfo_pedaqoji": "Pedaqoji",
+            "nduinfo_beynelxalq": "Beynəlxalq Münasibətlər və Hüquq",
+            "nduinfo_beynelxalq_mekteb": "Beynəlxalq Məktəb",
+            "nduinfo_eco_new": "İqtisadiyyat və İdarəetmə",
+            "nduinfo_eco_2cikorpus": "İqtisadiyyat və İdarəetmə (Özəl)",
+            "nduinfo_med_new": "Tibb",
+            "nduinfo_tibbkolleci": "Tibb Kolleci",
+            "nduinfo_texnikikollec": "Texniki Kollec",
+            "nduinfo_magistratura": "Magistratura",
+            "nduinfo_tarix_filologiya": "Tarix-Filologiya",
+            "nduinfo_art": "İncəsənət",
+            "nduinfo_incesenet": "İncəsənət",
+            "nduinfo_tibbkolleci": "Tibb Kolleci",
+            "nduinfo_texnikikollec": "Texniki Kollec",
+        }
+        result = [
+            (item[0], converter[item[0]])
+            for item in result
+            if item[0] not in filter_out
+        ]
         await cur.close()
         conn.close()
         ssh_tunnel.close()
