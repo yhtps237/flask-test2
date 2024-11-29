@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="content-section">
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <div class="form-group">
+                {{form.faculty_name.label(class="form-control-label")}}
+                {{ form.faculty_name }}
+                {% for error in form.faculty_name.errors %}
+                <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{form.profession_name.label(class="form-control-label")}}
+                {{ form.profession_name }}
+                {% for error in form.profession_name.errors %}
+                <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{form.course_name.label(class="form-control-label")}}
+                {{ form.course_name }}
+                {% for error in form.course_name.errors %}
+                <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{form.subject_name.label(class="form-control-label")}}
+                {{ form.subject_name }}
+                {% for error in form.subject_name.errors %}
+                <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{form.topic_name.label(class="form-control-label")}}
+                {{ form.topic_name }}
+                {% for error in form.topic_name.errors %}
+                <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                {{form.text.label(class="form-control-label")}}
+                {{ form.text }}
+                {% for error in form.text.errors %}
+                <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            
+
+
+        </fieldset>
+        <div class="form-group">
+            {{form.submit(class="btn btn-outline-info")}}
+        </div>
+    </form>
+</div>
+{% endblock content %}
+
+{% block custom_js %}
+<script>
+document.getElementById('profession_name').addEventListener('change', function() {
+    var faculty_name = document.querySelector('[name="faculty_name"]').value;  // Get faculty_name value
+    var profession_name = this.value;  // Get profession_name value
+
+    // Set hx-vals dynamically with both values
+    this.setAttribute('hx-vals', JSON.stringify({
+        "faculty_name": faculty_name,
+        "profession_name": profession_name
+    }));
+});
+
+document.getElementById('course_name').addEventListener('change', function() {
+    var faculty_name = document.querySelector('[name="faculty_name"]').value;  // Get faculty_name value
+    var course_name = this.value;  // Get profession_name value
+
+    // Set hx-vals dynamically with both values
+    this.setAttribute('hx-vals', JSON.stringify({
+        "faculty_name": faculty_name,
+        "course_name": course_name
+    }));
+});
+
+document.getElementById('subject_name').addEventListener('change', function() {
+    var faculty_name = document.querySelector('[name="faculty_name"]').value;  // Get faculty_name value
+    var subject_name = this.value;  // Get profession_name value
+
+    // Set hx-vals dynamically with both values
+    this.setAttribute('hx-vals', JSON.stringify({
+        "faculty_name": faculty_name,
+        "subject_name": subject_name
+    }));
+});
+
+</script>
+{% endblock custom_js %}

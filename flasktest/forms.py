@@ -10,6 +10,7 @@ from wtforms import (
     SelectField,
     DateField,
     RadioField,
+    TextAreaField,
 )
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 from flasktest.models import User
@@ -82,13 +83,13 @@ class ContingentForm(FlaskForm):
     submit = SubmitField("Çap et")
 
 
-class ContingentForm(FlaskForm):
-    faculty_name = SelectField("Fakültə Adı", validators=[DataRequired()])
+# class ContingentForm(FlaskForm):
+#     faculty_name = SelectField("Fakültə Adı", validators=[DataRequired()])
 
-    start_date = DateField("Başlama tarixi", validators=[DataRequired()])
-    end_date = DateField("Bitmə tarixi", validators=[DataRequired()])
+#     start_date = DateField("Başlama tarixi", validators=[DataRequired()])
+#     end_date = DateField("Bitmə tarixi", validators=[DataRequired()])
 
-    submit = SubmitField("Çap et")
+#     submit = SubmitField("Çap et")
 
 
 class StudentPhoneNumber(FlaskForm):
@@ -171,3 +172,96 @@ class LoginForm(FlaskForm):
     password = PasswordField("Şifrə", validators=[DataRequired()])
     remember = BooleanField("Məni xatırla")
     submit = SubmitField("Daxil ol")
+
+
+# def validate_not_default(field):
+#     """
+#     Custom validator to ensure the selected value is not the default (0).
+#     """
+
+#     print(field.data)
+
+#     if field.data == 0:
+#         raise ValidationError("Please select a valid option.")
+
+
+class DeleteTopicForm(FlaskForm):
+    faculty_name = SelectField(
+        "Fakültə Adı",
+        validators=[DataRequired()],
+        render_kw={
+            "class": "form-control",
+            "required": True,
+            "hx-get": "/get_ejurnal_professions",
+            "hx-target": "#profession_name",
+        },
+    )
+    profession_name = SelectField(
+        "İxtisas Adı",
+        coerce=int,
+        choices=[(0, "---")],
+        # validators=[lambda form, field: validate_not_default(field)],
+        render_kw={
+            "class": "form-control",
+            "required": True,
+            "hx-get": "/get_ejurnal_courses",
+            "hx-target": "#course_name",
+            # "hx-vals": '{"faculty_name": this.form.faculty_name.value, "profession_name": this.form.profession_name.value}',
+        },
+    )
+    course_name = SelectField(
+        "Kurs Adı",
+        coerce=int,
+        choices=[(0, "---")],
+        validate_choice=False,
+        # validators=[lambda form, field: validate_not_default(field)],
+        render_kw={
+            "class": "form-control",
+            "required": True,
+            "hx-get": "/get_ejurnal_subjects",
+            "hx-target": "#subject_name",
+        },
+    )
+    subject_name = SelectField(
+        "Fənn Adı",
+        coerce=int,
+        choices=[(0, "---")],
+        # validators=[lambda form, field: validate_not_default(field)],
+        render_kw={
+            "class": "form-control",
+            "required": True,
+            "hx-get": "/get_ejurnal_topics",
+            "hx-target": "#topic_name",
+        },
+    )
+
+    topic_name = SelectField(
+        "Mövzu Adı",
+        coerce=int,
+        choices=[(0, "---")],
+        # validators=[lambda form, field: validate_not_default(field)],
+        render_kw={
+            "class": "form-control",
+            "required": True,
+        },
+    )
+
+    text = TextAreaField(
+        "Məlumat",
+        render_kw={
+            "class": "form-control",
+            "required": True,
+        },
+    )
+
+    submit = SubmitField("Sorğu yarat")
+
+    def validate_profession_name(self, profession_name):
+        print(type(profession_name.data), profession_name.data)
+        if profession_name.data == 0:
+            raise ValidationError("Zəhmət olmasa ixtisası seçin.")
+
+    def validate_course_name(self, course_name):
+        print(type(course_name.data), course_name.data)
+        if course_name.data == 0:
+            raise ValidationError("Zəhmət olmasa ixtisası seçin.")

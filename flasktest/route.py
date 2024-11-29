@@ -1,3 +1,4 @@
+from collections import defaultdict
 import datetime
 from flask import Flask, abort, render_template, url_for, request, flash, redirect
 from flasktest.forms import (
@@ -7,6 +8,7 @@ from flasktest.forms import (
     UpdateAccountForm,
     ContingentForm,
     StudentsForm,
+    DeleteTopicForm,
 )
 from flasktest.models import User
 from flasktest.database import database, connect_db, disconnect_db
@@ -210,10 +212,8 @@ def about():
 
 
 @app.route("/get_professions")
-# @login_required
 def get_professions():
     faculty_id = request.args.get("faculty_name", type=int)
-    print("faculty_id", faculty_id)
     connection = connect_db(database)
     with connection.cursor() as cursor:
         query = f"""
@@ -691,3 +691,354 @@ def delete_movement(pk):
     disconnect_db(connection, database)
     # ---------------------------------------------------------
     return redirect(url_for("index"))
+
+
+# =============================================================
+@app.route("/empty-topics", methods=["GET"])
+@login_required
+async def empty_topics():
+    # if request.method == "POST":
+    #     contingent_id = request.form["number"]
+    #     r = requests.get(
+    #         f"https://api.ndu.edu.az/download-contingent-file?commandment_id={contingent_id}"
+    #     )
+
+    #     return send_file(
+    #         io.BytesIO(r.content),
+    #         mimetype="application/pdf",
+    #     )
+    connection = connect_db(database)
+    with connection.cursor() as cursor:
+        if current_user.is_superuser:
+            query = f"""SELECT id, db_name, profession_name,  course_name, subject_name, 
+                        topic_name, topic_id,status, request_user_id, confirm_user_id, 
+                        request_text, answer_text, created_at
+                        from examsystem.contingent_empty_topics_requests
+                    """
+        else:
+            query = f"""SELECT id, db_name, profession_name,  course_name, subject_name, 
+                        topic_name, topic_id,status, request_user_id, confirm_user_id, 
+                        request_text, answer_text, created_at
+                        from examsystem.contingent_empty_topics_requests
+                        WHERE request_user_id={current_user.id}
+                    """
+
+        cursor.execute(query)
+        results = cursor.fetchall()
+        user_ids = [row[8] for row in results]
+        users = User.query.filter(User.id.in_(user_ids)).all()
+        user_map = {user.id: user for user in users}
+        # Sort the list of tuples by the 'db_name' which is at index 7
+        # sorted_tuples = sorted(results, key=lambda x: x[7])
+        # # print(sorted_tuples)
+        # # Convert the sorted list of tuples to a dictionary, using 'db_name' (index 7) as the key
+        # sorted_dict = defaultdict(list)
+        # for t in sorted_tuples:
+        #     sorted_dict[t[7]].append(t)
+
+        # data = {}
+
+        # for db_name, ids in sorted_dict.items():
+        #     # print(db_name, ids)
+        #     result = await database.get_ejurnal_fields(db_name, ids)
+        #     data[db_name] = result
+
+        # Print the resulting dictionary
+        # for db_name, topics in data.items():
+        #     print(db_name, topics)
+        # print(data)
+
+    disconnect_db(connection, database)
+
+    # if request.args.get("export") == "True":
+    #     report_obj = MovementReport(results, current_user.faculty_id)
+
+    #     report_obj.save("report")
+    #     return send_file(
+    #         "../excel-files/report.xlsx",
+    #         as_attachment=True,
+    #         download_name="report.xlsx",
+    #         mimetype="application/excel",
+    #     )
+
+    return render_template(
+        "requests/empty_topics.html", results=results, user_map=user_map
+    )
+
+
+@app.route("/delete-topic", methods=["GET"])
+@login_required
+async def remove_topic_delete_request():
+
+    if not current_user.is_superuser:
+        raise abort(403, "You do not have permission to access this resource.")
+
+    row_id = request.args.get("pk")
+
+    connection = connect_db(database)
+    with connection.cursor() as cursor:
+
+        query = f"""DELETE from examsystem.contingent_empty_topics_requests
+                    WHERE id={row_id}
+                """
+
+        cursor.execute(query)
+        connection.commit()
+
+    disconnect_db(connection, database)
+    previous_url = request.referrer  # Get the referrer URL
+    if previous_url:
+        return redirect(previous_url)
+    return redirect("/")
+
+
+@app.route("/reject-topic", methods=["GET"])
+@login_required
+async def reject_topic_delete_request():
+
+    if not current_user.is_superuser:
+        raise abort(403, "You do not have permission to access this resource.")
+
+    row_id = request.args.get("pk")
+    topic_id = request.args.get("topic_id")
+    reason = request.args.get("reason")
+    db_name = request.args.get("db")
+
+    connection = connect_db(database)
+    with connection.cursor() as cursor:
+
+        await database.delete_ejurnal_topic(db_name, topic_id)
+
+        query = f"""UPDATE examsystem.contingent_empty_topics_requests
+                    SET status=3, confirm_date=CURRENT_TIMESTAMP,
+                    confirm_user_id={current_user.id},
+                    answer_text='{reason}'
+                    WHERE id={row_id}
+                """
+
+        cursor.execute(query)
+        connection.commit()
+
+    disconnect_db(connection, database)
+    previous_url = request.referrer  # Get the referrer URL
+    if previous_url:
+        return redirect(previous_url)
+    return redirect("/")
+
+
+@app.route("/confirm-topic", methods=["GET"])
+@login_required
+async def confirm_topic_delete_request():
+
+    if not current_user.is_superuser:
+        raise abort(403, "You do not have permission to access this resource.")
+
+    row_id = request.args.get("pk")
+    topic_id = request.args.get("topic_id")
+    db_name = request.args.get("db")
+
+    connection = connect_db(database)
+    with connection.cursor() as cursor:
+
+        await database.delete_ejurnal_topic(db_name, topic_id)
+
+        query = f"""UPDATE examsystem.contingent_empty_topics_requests
+                    SET status=2, confirm_date=CURRENT_TIMESTAMP,
+                    confirm_user_id={current_user.id}
+                    WHERE id={row_id}
+                """
+
+        cursor.execute(query)
+        connection.commit()
+
+    disconnect_db(connection, database)
+    previous_url = request.referrer  # Get the referrer URL
+    if previous_url:
+        return redirect(previous_url)
+    return redirect("/")
+
+
+@app.route("/view-topic", methods=["GET"])
+@login_required
+async def view_topic_delete_request():
+
+    row_id = request.args.get("pk")
+
+    connection = connect_db(database)
+    with connection.cursor() as cursor:
+
+        query = f"""SELECT * from examsystem.contingent_empty_topics_requests
+                    WHERE id={row_id}
+                """
+
+        cursor.execute(query)
+        result = cursor.fetchone()
+        request_user_id = result[7]
+        user_id = result[8]
+        user = User.query.get(user_id)
+        split_result = result[5].split(" - ")
+
+    disconnect_db(connection, database)
+    if not current_user.is_superuser and current_user.id != request_user_id:
+        raise abort(403, "You do not have permission to access this resource.")
+
+    return render_template(
+        "requests/view_topic_delete_request.html",
+        result=result,
+        confirm_user=user,
+        split_result=split_result,
+    )
+
+
+@app.route("/get_ejurnal_professions")
+async def get_ejurnal_professions():
+    db_name = request.args.get("faculty_name", type=str)
+    profession_names = await database.get_profession_names(db_name)
+    profession_names.insert(0, (0, "---"))
+    return render_template("professions.html", profession_names=profession_names)
+
+
+@app.route("/get_ejurnal_courses")
+async def get_ejurnal_courses():
+    db_name = request.args.get("faculty_name", type=str)
+    profession_name = request.args.get("profession_name", type=str)
+    # Fetch courses based on db_name and profession_name
+    courses = await database.get_course_names(db_name, profession_name)
+    # Return the rendered course dropdown
+    courses.insert(0, (0, "---"))
+    return render_template("courses.html", courses=courses)
+
+
+@app.route("/get_ejurnal_subjects")
+async def get_ejurnal_subjects():
+    db_name = request.args.get("faculty_name", type=str)
+    course_name = request.args.get("course_name", type=str)
+    subject_names = await database.get_subject_names(db_name, course_name)
+    subject_names.insert(0, (0, "---"))
+    return render_template("subjects.html", subjects=subject_names)
+
+
+@app.route("/get_ejurnal_topics")
+async def get_ejurnal_topics():
+    db_name = request.args.get("faculty_name", type=str)
+    subject_name = request.args.get("subject_name", type=str)
+    topic_names = await database.get_topic_names(db_name, subject_name)
+    topic_names.insert(0, (0, "---"))
+
+    return render_template("topics.html", topics=topic_names)
+
+
+@app.route("/add-topic-delete-request", methods=["GET", "POST"])
+@login_required
+async def new_topic_to_delete():
+
+    form = DeleteTopicForm()
+
+    faculty_names = await database.get_faculty_names()
+    form.faculty_name.choices = faculty_names
+    first_faculty_name = faculty_names[0][0]
+    if request.method == "POST":
+        first_faculty_name = form.faculty_name.data
+    profession_names = await database.get_profession_names(first_faculty_name)
+    profession_names.insert(0, (0, "---"))
+    form.profession_name.choices = profession_names
+
+    if request.method == "POST":
+        form.course_name.choices = [(0, "---")] + await database.get_course_names(
+            first_faculty_name, form.profession_name.data
+        )
+        form.subject_name.choices = [(0, "---")] + await database.get_subject_names(
+            first_faculty_name, form.course_name.data
+        )
+        form.topic_name.choices = [(0, "---")] + await database.get_topic_names(
+            first_faculty_name, form.subject_name.data
+        )
+    else:
+        form.course_name.choices = [(0, "---")]
+        form.subject_name.choices = [(0, "---")]
+
+        form.topic_name.choices = [(0, "---")]
+
+    if request.method == "POST":
+        if form.validate_on_submit():
+            db_name = form.faculty_name.data
+            profession_name = await database.get_profession_name_by_id(
+                form.faculty_name.data, form.profession_name.data
+            )
+            course_name = await database.get_course_name_by_id(
+                form.faculty_name.data, form.course_name.data
+            )
+            subject_name = await database.get_subject_name_by_id(
+                form.faculty_name.data, form.subject_name.data
+            )
+            topic_name = await database.get_topic_name_by_id(
+                form.faculty_name.data, form.topic_name.data
+            )
+            topic_id = form.topic_name.data
+            text = form.text.data
+            print(db_name)
+            print(profession_name)
+            print(course_name)
+            print(subject_name)
+            print(topic_name)
+            print(topic_id)
+            # ---------------------------------------------------------
+            connection = connect_db(database)
+
+            with connection.cursor() as cursor:
+                query = f"""INSERT INTO examsystem.contingent_empty_topics_requests(db_name, profession_name, course_name,
+                            subject_name, topic_name, topic_id, request_user_id, request_text)
+                            VALUES('{db_name}', '{profession_name}', '{course_name}', '{subject_name}',
+                            '{topic_name}', {topic_id}, {current_user.id}, '{text}');
+                        """
+                cursor.execute(query)
+
+                connection.commit()
+
+            disconnect_db(connection, database)
+
+            flash("Form successfully submitted!", "success")
+            previous_url = request.referrer  # Get the referrer URL
+            if previous_url:
+                return redirect(previous_url)
+            return redirect("/")
+            # return redirect(url_for("new_topic_to_delete"))
+
+    # ---------------------------------------------------------
+
+    if request.method == "POST":
+        if form.validate_on_submit():
+            # faculty_id = form.faculty_name.data
+            # profession_id = form.profession_name.data
+            # edu = form.eduyear.data
+            # sm = form.semestr.data
+            # start_date = form.start_date.data
+            # end_date = form.end_date.data
+            # radio = form.radio.data
+            # contingent = Contingent(
+            #     edu, sm, faculty_id, profession_id, start_date, end_date, radio
+            # )
+            # contingent.save(f"{start_date}-{end_date}-{radio}")
+
+            # return send_file(
+            #     f"../excel-files/{start_date}-{end_date}-{radio}.xlsx",
+            #     as_attachment=True,
+            #     download_name=f"{start_date}-{end_date}-{radio}.xlsx",
+            #     mimetype="application/excel",
+            # )
+            pass
+            # return redirect(request.url)
+        else:
+            print(form.errors)
+
+    # if request.args.get("export") == "True":
+    #     report_obj = MovementReport(results, current_user.faculty_id)
+
+    #     report_obj.save("report")
+    #     return send_file(
+    #         "../excel-files/report.xlsx",
+    #         as_attachment=True,
+    #         download_name="report.xlsx",
+    #         mimetype="application/excel",
+    #     )
+    return render_template("requests/add_topic_to_delete.html", form=form)

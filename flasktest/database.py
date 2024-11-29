@@ -4,6 +4,14 @@ import asyncssh
 import aiomysql
 
 
+class EjurnalModel:
+    db_name: str
+    profession_id: int
+    course_id: int
+    subject_id: int
+    topic_id: int
+
+
 class Database:
     def __init__(self, hostname, username, password, port=3306, database_name=None):
         self.hostname = hostname
@@ -104,6 +112,234 @@ class Database:
         conn.close()
         ssh_tunnel.close()
         return result
+
+    async def get_profession_names(self, db_name):
+        ssh_tunnel, local_listener = await self.open_ssh_tunnel(
+            database.ssh_e_jurnal_host,
+            database.ssh_e_jurnal_port,
+            database.ssh_e_jurnal_username,
+            database.ssh_e_jurnal_password,
+            "localhost",
+            3306,
+        )
+        conn = await self._connect_ejurnal_db(local_listener.get_port(), db_name)
+
+        cur = await conn.cursor()
+        await cur.execute("select ixtisas_id, ixtisas_ad from ixtisas;")
+        result = await cur.fetchall()
+        await cur.close()
+        conn.close()
+        ssh_tunnel.close()
+        return [i for i in result]
+
+    async def get_course_names(self, db_name, profession_id):
+        ssh_tunnel, local_listener = await self.open_ssh_tunnel(
+            database.ssh_e_jurnal_host,
+            database.ssh_e_jurnal_port,
+            database.ssh_e_jurnal_username,
+            database.ssh_e_jurnal_password,
+            "localhost",
+            3306,
+        )
+        conn = await self._connect_ejurnal_db(local_listener.get_port(), db_name)
+
+        cur = await conn.cursor()
+        await cur.execute(
+            f"select kurs_id, kurs_ad from kurs where kurs_ixtisas={profession_id};"
+        )
+        result = await cur.fetchall()
+        await cur.close()
+        conn.close()
+        ssh_tunnel.close()
+        return [i for i in result]
+
+    async def get_subject_names(self, db_name, course_id):
+        ssh_tunnel, local_listener = await self.open_ssh_tunnel(
+            database.ssh_e_jurnal_host,
+            database.ssh_e_jurnal_port,
+            database.ssh_e_jurnal_username,
+            database.ssh_e_jurnal_password,
+            "localhost",
+            3306,
+        )
+        conn = await self._connect_ejurnal_db(local_listener.get_port(), db_name)
+
+        cur = await conn.cursor()
+        await cur.execute(
+            f"select fenn_id, concat(fenn_ad, ' - ', fenn_tip) from fenn where fenn_kurs={course_id};"
+        )
+        result = await cur.fetchall()
+        await cur.close()
+        conn.close()
+        ssh_tunnel.close()
+        return [i for i in result]
+
+    async def get_topic_names(self, db_name, subject_id):
+        ssh_tunnel, local_listener = await self.open_ssh_tunnel(
+            database.ssh_e_jurnal_host,
+            database.ssh_e_jurnal_port,
+            database.ssh_e_jurnal_username,
+            database.ssh_e_jurnal_password,
+            "localhost",
+            3306,
+        )
+        conn = await self._connect_ejurnal_db(local_listener.get_port(), db_name)
+
+        cur = await conn.cursor()
+        await cur.execute(
+            f"select movzu_id, concat(movzu_ad, ' - ', movzu_tarix) from movzu where movzu_fenn={subject_id};"
+        )
+        result = await cur.fetchall()
+        await cur.close()
+        conn.close()
+        ssh_tunnel.close()
+        return [i for i in result]
+
+    async def get_profession_name_by_id(self, db_name, profession_id):
+        ssh_tunnel, local_listener = await self.open_ssh_tunnel(
+            database.ssh_e_jurnal_host,
+            database.ssh_e_jurnal_port,
+            database.ssh_e_jurnal_username,
+            database.ssh_e_jurnal_password,
+            "localhost",
+            3306,
+        )
+        conn = await self._connect_ejurnal_db(local_listener.get_port(), db_name)
+
+        cur = await conn.cursor()
+        await cur.execute(
+            f"select ixtisas_ad from ixtisas where ixtisas_id={profession_id};"
+        )
+        result = await cur.fetchone()
+        await cur.close()
+        conn.close()
+        ssh_tunnel.close()
+        return result[0]
+
+    async def get_course_name_by_id(self, db_name, course_id):
+        ssh_tunnel, local_listener = await self.open_ssh_tunnel(
+            database.ssh_e_jurnal_host,
+            database.ssh_e_jurnal_port,
+            database.ssh_e_jurnal_username,
+            database.ssh_e_jurnal_password,
+            "localhost",
+            3306,
+        )
+        conn = await self._connect_ejurnal_db(local_listener.get_port(), db_name)
+
+        cur = await conn.cursor()
+        await cur.execute(f"select kurs_ad from kurs where kurs_id={course_id};")
+        result = await cur.fetchone()
+        await cur.close()
+        conn.close()
+        ssh_tunnel.close()
+        return result[0]
+
+    async def get_subject_name_by_id(self, db_name, subject_id):
+        ssh_tunnel, local_listener = await self.open_ssh_tunnel(
+            database.ssh_e_jurnal_host,
+            database.ssh_e_jurnal_port,
+            database.ssh_e_jurnal_username,
+            database.ssh_e_jurnal_password,
+            "localhost",
+            3306,
+        )
+        conn = await self._connect_ejurnal_db(local_listener.get_port(), db_name)
+
+        cur = await conn.cursor()
+        await cur.execute(f"select fenn_ad from fenn where fenn_id={subject_id};")
+        result = await cur.fetchone()
+        await cur.close()
+        conn.close()
+        ssh_tunnel.close()
+        return result[0]
+
+    async def get_topic_name_by_id(self, db_name, topic_id):
+        ssh_tunnel, local_listener = await self.open_ssh_tunnel(
+            database.ssh_e_jurnal_host,
+            database.ssh_e_jurnal_port,
+            database.ssh_e_jurnal_username,
+            database.ssh_e_jurnal_password,
+            "localhost",
+            3306,
+        )
+        conn = await self._connect_ejurnal_db(local_listener.get_port(), db_name)
+
+        cur = await conn.cursor()
+        await cur.execute(
+            f"""SELECT 
+                    CONCAT(movzu_ad, ' - ', movzu_tarix, ' - ', COUNT(davamiyyet_id))
+                    
+                FROM
+                    movzu
+                        LEFT JOIN
+                    davamiyyet ON davamiyyet_movzu = movzu_id
+                WHERE movzu_id={topic_id};
+                """
+        )
+        result = await cur.fetchone()
+        await cur.close()
+        conn.close()
+        ssh_tunnel.close()
+        return result[0]
+
+    async def get_ejurnal_fields(self, db_name, ids):
+        ssh_tunnel, local_listener = await self.open_ssh_tunnel(
+            database.ssh_e_jurnal_host,
+            database.ssh_e_jurnal_port,
+            database.ssh_e_jurnal_username,
+            database.ssh_e_jurnal_password,
+            "localhost",
+            3306,
+        )
+        conn = await self._connect_ejurnal_db(local_listener.get_port(), db_name)
+
+        cur = await conn.cursor()
+        sql_query = """
+        SELECT pr.ixtisas_ad, cr.kurs_ad, sub.fenn_ad, 
+        topic.movzu_ad, topic.movzu_id
+        FROM ixtisas AS pr
+        JOIN kurs AS cr ON cr.kurs_id = %s
+        JOIN fenn AS sub ON sub.fenn_id = %s
+        JOIN movzu AS topic ON topic.movzu_id = %s
+        WHERE pr.ixtisas_id = %s
+        """
+        results = []
+        for id_set in ids:
+            await cur.execute(sql_query, id_set[:4])
+            # Fetch results for each query execution
+            result = await cur.fetchall()
+            results.append([i for i in result[0]] + list(id_set[4:]))
+
+        data = [item for item in results]
+        await cur.close()
+        conn.close()
+        ssh_tunnel.close()
+        return data
+
+    async def delete_ejurnal_topic(self, db_name, topic_id):
+        ssh_tunnel, local_listener = await self.open_ssh_tunnel(
+            database.ssh_e_jurnal_host,
+            database.ssh_e_jurnal_port,
+            database.ssh_e_jurnal_username,
+            database.ssh_e_jurnal_password,
+            "localhost",
+            3306,
+        )
+        conn = await self._connect_ejurnal_db(local_listener.get_port(), db_name)
+
+        cur = await conn.cursor()
+        sql_query = f"""
+                    DELETE FROM movzu WHERE movzu_id = {topic_id}
+                    """
+
+        await cur.execute(sql_query)
+        await conn.commit()
+
+        await cur.close()
+        conn.close()
+        ssh_tunnel.close()
+        return True
 
     async def get_attendance(self, faculty_name, start_date, end_date):
         ssh_tunnel, local_listener = await database.open_ssh_tunnel(

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            Sorğu Detalları
+        </div>
+        <div class="card-body">
+            <!-- Example field -->
+            <div class="d-flex justify-content-between">
+                <div><strong>Sorğu yaradılma tarixi:</strong></div>
+                <div style="text-align: right;">{{ result[13] }}</div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <div><strong>İxtisas adı:</strong></div>
+                <div style="text-align: right;">{{ result[2] }}</div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <div><strong>Kurs adı:</strong></div>
+                <div style="text-align: right;">{{ result[3] }}</div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <div><strong>Fənn adı:</strong></div>
+                <div style="text-align: right;">{{ result[4] }}</div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <div><strong>Mövzu Ad:</strong></div>
+                <div style="text-align: right;">{{ split_result.0 }}</div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <div><strong>Mövzu Tarix:</strong></div>
+                <div style="text-align: right;">{{ split_result.1 }}</div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <div><strong>Davamiyyət say:</strong></div>
+                <div style="text-align: right;">{{ split_result.2 }}</div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <div><strong>İstifadəçi mesajı:</strong></div>
+                <div style="text-align: right;">{{ result[10] }}</div>
+            </div>
+
+            <hr>
+
+            <div class="d-flex justify-content-between">
+                <div><strong>Status:</strong></div>
+                <div>
+                    {% if result[9] == 2 %}
+                        <span class="badge bg-success">Təsdiqlənib</span>
+                    {% elif result[9] == 3 %}
+                        <span class="badge bg-danger">Rədd edildi</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">Gözləmədə</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <div><strong>Sorğuya baxan şəxs:</strong></div>
+                <div style="text-align: right;">
+                    {% if confirm_user %}
+                        {{ confirm_user }}
+                    {% else %}
+                        Məlumat yoxdur
+                    {% endif %}
+                </div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <div><strong>Mesaj:</strong></div>
+                <div style="text-align: right;">
+                    {% if result[11] %}
+                        {{ result[11] }}
+                    {% else %}
+                        Mesaj yoxdur
+                    {% endif %}
+                </div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <div><strong>Tarix:</strong></div>
+                <div style="text-align: right;">
+                    {% if result[12] %}
+                        {{ result[12] }}
+                    {% else %}
+                        Mesaj yoxdur
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

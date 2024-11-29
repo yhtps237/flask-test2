@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+
+{% block custom_css %}
+<style>
+    /* Styling for cells with the "success" class */
+
+td.success {
+    background-color: #d4edda; /* Light green background */
+    color: #155724;          /* Dark green text */
+    border: 1px solid #c3e6cb; /* Border matching the green tone */
+    text-align: center;      /* Center-align text */
+    font-weight: bold;       /* Bold text for emphasis */
+    padding: 10px;           /* Padding for better spacing */
+}
+
+/* Styling for cells with the "waiting" class */
+td.waiting {
+    background-color: #fff3cd; /* Light yellow background */
+    color: #856404;          /* Dark yellow/brown text */
+    border: 1px solid #ffeeba; /* Border matching the yellow tone */
+    text-align: center;      /* Center-align text */
+    font-weight: bold;       /* Bold text for emphasis */
+    padding: 10px;           /* Padding for better spacing */
+}
+
+td.reject {
+    background-color: #f8d7da; /* Light red/pink background */
+    color: #721c24;           /* Dark red text */
+    border: 1px solid #f5c6cb; /* Border matching the red tone */
+    text-align: center;       /* Center-align text */
+    font-weight: bold;        /* Bold text for emphasis */
+    padding: 10px;            /* Padding for better spacing */
+}
+
+
+#topic_col {
+    width: 200px !important;
+}
+
+
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card o-hidden mb-4">
+    <div class="card-header d-flex align-items-center">
+        <h3 class="w-50 float-left card-title m-0">Boş mövzu sorğuları</h3>
+        <div class="dropdown dropleft text-right w-50 float-right">
+            <button class="btn bg-gray-100"
+                id="dropdownMenuButton_table1"
+                type="button" data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"><svg
+                    xmlns="http://www.w3.org/2000/svg" width="16"
+                    height="16" fill="currentColor" class="bi bi-gear"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0" />
+                    <path
+                        d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z" />
+                </svg>
+            </button>
+            <div class="dropdown-menu"
+                aria-labelledby="dropdownMenuButton_table1">
+                <a class="dropdown-item"
+                    href="{{url_for('index')}}?export=True">Çap et</a>
+                    <a class="dropdown-item"
+                    href="{{url_for('new_topic_to_delete')}}">Sorğu yarat</a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table class="display table table-striped "
+                id="zero_configuration_table" style="width:100%">
+                <thead>
+                    <tr>
+                        <th scope="col">Sorğu yaradıldı</th>
+                        <th scope="col">Sorğu yaradan şəxs</th>
+
+                        {% if current_user.is_superuser %}
+                        <th scope="col">Fakültə adı</th>
+                        {% endif %}
+                        <th scope="col">İxtisas adı</th>
+                        <th scope="col">Kurs</th>
+                        <th scope="col">Fənn</th>
+                        <th id="topic_col" scope="col">Mövzu</th>
+                        {% if current_user.is_superuser %}
+                        <th scope="col">Mövzu ID</th>
+                        {% endif %}
+
+                        <th scope="col">Status</th>
+                        <th scope="col">Əməliyyatlar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in results %}
+                        <tr>
+                            <td>{{ row[12].strftime('%Y-%m-%d %H:%M:%S')}}</td>
+
+                            <td>{{ user_map[row[8]].username }}</td>
+
+                            {% if current_user.is_superuser %}
+                            <th>{{row[1]}}</th>
+                            {% endif %}
+
+                            <th>{{row[2]}}</th>
+                            <td>{{row[3]}}</td>
+                            <td>{{row[4]}}</td>
+                            <td>{{row[5]}}</td>
+
+                            {% if current_user.is_superuser %}
+                            <th>{{row[6]}}</th>
+                            {% endif %}
+
+                            {% if row[7] == 2 %}
+                            <td class="success">Təsdiqlənib</td>
+                            {% elif row[7] == 3 %}
+                            <td class="reject">Rədd edildi</td>
+                            {% else %}
+                            <td class="waiting">Gözləmədə</td>
+                            {% endif %}
+                            
+
+                            
+                            <td>
+                                {% if current_user.is_superuser %}
+                                <a href="{{ url_for('confirm_topic_delete_request', pk=row[0], db=row[1], topic_id=row[6]) }}" title="Təsdiqlə">
+                                    <i class="fa fa-check text-success"></i>
+                                </a>
+                                <a href="#" class="reject-btn" data-pk="{{ row[0] }}" data-db="{{ row[1] }}" data-topic-id="{{ row[6] }}" data-toggle="modal" data-target="#rejectModal">
+                                    <i class="fa fa-times text-danger"></i>
+                                </a>
+                                {% endif %}
+                                <a target="_blank" href="{{ url_for('view_topic_delete_request', pk=row[0]) }}" title="Bax">
+                                    <i class="fa fa-eye text-primary"></i>
+                                </a>
+                                {% if current_user.is_superuser %}
+                                <a href="{{ url_for('remove_topic_delete_request', pk=row[0]) }}" title="Sil">
+                                    <i class="fa fa-trash text-danger"></i>
+                                </a>
+                                {% endif %}
+                            </td>
+
+                                <!-- Modal for Reject -->
+                            <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="rejectModalLabel">Rədd Etmə Səbəbi</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="rejectForm" action="" method="get">
+                                                <div class="form-group">
+                                                    <label for="rejectReason">Rədd etmə səbəbini daxil edin:</label>
+                                                    <textarea class="form-control" id="rejectReason" name="reason" rows="3" required></textarea>
+                                                </div>
+                                                <input type="hidden" id="rejectPk" name="pk">
+                                                <input type="hidden" id="rejectDb" name="db">
+                                                <input type="hidden" id="rejectTopicId" name="topic_id">
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Bağla</button>
+                                            <button type="button" class="btn btn-danger" id="submitRejectBtn">Rədd et</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+
+                            </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block custom_js %}
+<script>
+    // When the "Reject" button is clicked
+    $('.reject-btn').click(function() {
+        // Get the data from the clicked button
+        var pk = $(this).data('pk');
+        var db = $(this).data('db');
+        var topicId = $(this).data('topic-id');
+
+        // Populate the hidden inputs in the modal form
+        $('#rejectPk').val(pk);
+        $('#rejectDb').val(db);
+        $('#rejectTopicId').val(topicId);
+    });
+
+    // Handle form submission when the user clicks "Rədd et"
+    $('#submitRejectBtn').click(function() {
+        // Get the reason entered by the user
+        var reason = $('#rejectReason').val();
+
+        if (reason.trim() === "") {
+            alert("Zəhmət olmasa, rədd etmə səbəbini daxil edin.");
+            return;
+        }
+
+        // Build the URL for the GET request
+        var pk = $('#rejectPk').val();
+        var db = $('#rejectDb').val();
+        var topicId = $('#rejectTopicId').val();
+        var url = "{{ url_for('reject_topic_delete_request', pk='') }}" + pk + "&db=" + db + "&topic_id=" + topicId + "&reason=" + encodeURIComponent(reason);
+
+        // Close the modal
+        $('#rejectModal').modal('hide');
+
+        // Redirect to the URL (this will trigger the GET request)
+        window.location.href = url;
+    });
+</script>
+
+{% endblock %}

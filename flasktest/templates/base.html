@@ -27,8 +27,10 @@
             rel="stylesheet" />
         <link href="{{ url_for('static', filename='css/plugins/toastr.css')  }}"
             rel="stylesheet" />
-        <link rel="stylesheet"
-            href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+        <!-- <link rel="stylesheet"
+            href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"> -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
         <link rel="stylesheet"
             href="{{ url_for('static', filename='css/plugins/datatables.min.css')  }}" />
             
@@ -45,6 +47,8 @@
         {% else %}
         <title>NDU ReportLab</title>
         {% endif %}
+
+        {% block custom_css %}{% endblock %}
     </head>
     <body>
         <header class="site-header">
@@ -87,14 +91,26 @@
                                             href="{{url_for('students_view')}}">Tələbələr</a>
                                         <a class="dropdown-item"
                                             href="{{url_for('ejurnal_view')}}">Ejurnal</a>
-                                        <!-- <a class="dropdown-item"
-                                            href="#">Another
-                                            action</a>
+                                    </div>
+                                </li>
 
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#"
+                                        id="navbarDropdown" role="button"
+                                        data-toggle="dropdown"
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                        Sorğular
+                                    </a>
+
+                                    <div class="dropdown-menu"
+                                        aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item"
-                                            href="#">Something
-                                            else
-                                            here</a> -->
+                                            href="{{url_for('empty_topics')}}">Qiymət</a>
+                                        <a class="dropdown-item"
+                                            href="{{url_for('empty_topics')}}">Tarix</a>
+                                        <a class="dropdown-item"
+                                            href="{{url_for('empty_topics')}}">Boş Mövzu</a>
                                     </div>
                                 </li>
                             </ul>
@@ -146,6 +162,7 @@
         </main>
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        {% block custom_js %}{% endblock %}
         <script src="https://unpkg.com/htmx.org@1.9.10"></script>
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
             integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -163,5 +180,7 @@
             src="{{ url_for('static', filename='js/plugins/datatables.min.js')  }}"></script>
         <script
             src="{{ url_for('static', filename='js/scripts/datatables.script.min.js')  }}"></script>
+
+        
     </body>
 </html>
