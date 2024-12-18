@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+
+{% block custom_css %}
+<style>
+    /* Styling the select menu */
+.custom-select {
+    width: 200px; /* Full width */
+    font-size: 16px; /* Font size */
+    background-color: #f8f9fa; /* Light background color */
+    border: 1px solid #ccc; /* Border color */
+    border-radius: 4px; /* Rounded corners */
+    appearance: none; /* Remove default dropdown arrow */
+    -webkit-appearance: none; /* For Safari */
+    -moz-appearance: none; /* For Firefox */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: all 0.3s ease; /* Smooth transition */
+}
+
+.custom-select:hover {
+    border-color: #007bff; /* Change border color on hover */
+}
+
+.custom-select:focus {
+    outline: none; /* Remove default focus outline */
+    border-color: #0056b3; /* Change border color when focused */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add shadow on focus */
+}
+
+/* Styling the dropdown arrow */
+.custom-select::after {
+    content: '▼'; /* Custom arrow character */
+    font-size: 18px;
+    color: #007bff; /* Arrow color */
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%); /* Vertically center the arrow */
+}
+
+/* Styling options */
+.custom-select option {
+    padding: 10px;
+    font-size: 16px;
+}
+
+/* Optional: Change background color of options when hovered */
+.custom-select option:hover {
+    background-color: #f1f1f1;
+}
+
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="col-md-12">
+    <div class="card o-hidden mb-4">
+        <div class="card-header d-flex align-items-center">
+            <h3 class="w-50 float-left card-title m-0">İmtahanlar</h3>
+            <div class="dropdown dropleft text-right w-50 float-right">
+                <button class="btn bg-gray-100"
+                    id="dropdownMenuButton_table1"
+                    type="button" data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"><svg
+                        xmlns="http://www.w3.org/2000/svg" width="16"
+                        height="16" fill="currentColor" class="bi bi-gear"
+                        viewBox="0 0 16 16">
+                        <path
+                            d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0" />
+                        <path
+                            d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115z" />
+                    </svg>
+                </button>
+                <div class="dropdown-menu"
+                    aria-labelledby="dropdownMenuButton_table1"><a
+                        class="dropdown-item"
+                        href="{{url_for('index')}}?export=True">Çap et</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="table-responsive table-container">
+                <table class="display table table-striped "
+                    id="zero_configuration_table" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Fakültə adı</th>
+                            <th scope="col">İxtisas adı</th>
+                            <th scope="col">Kurs</th>
+                            <th scope="col">Fənn</th>
+                            <th scope="col">Müəllim</th>
+                            <th scope="col">İmtahan növü</th>
+                            <th scope="col">Qrub</th>
+                            <th scope="col">Alt/qrup</th>
+                            <th scope="col">İmtahan olub</th>
+                            <th scope="col">Tarix</th>
+                            <th scope="col">Saat</th>
+                            <th scope="col">Kafedra adı</th>
+                            <th scope="col">Yoxlanılıb</th>
+                            <th scope="col">Telefon</th>
+                            <th scope="col">Əməliyyatlar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in results %}
+                        {% if current_user.faculty_id == 0 or
+                        current_user.faculty_id ==
+                        row[10] %}
+                        <tr>
+                            <th>{{row[3]}}</th>
+                            <th id="faculty_name">{{row[0]}}</th>
+                            <td>{{row[1]}}</td>
+                            <td>{{row[2]}}</td>
+                            <td>{{row[4]}}</td>
+                            <td>{{row[5]}}</td>
+                            <td>{{row[6]}}</td>
+                            <td>{{row[7]}}</td>
+                            <td>{% if row[8] %}Alt/Qrup{% else %}Normal Fənn{% endif %}</td>
+                            <td>{% if row[9] %}İmtahan olub{% else %}İmtahan olmayıb{% endif %}</td>
+                            <td>{{row[10]}}</td>
+                            <td>{{row[11]}}</td>
+                            <td>{{row[12]}}</td>
+                            <td>
+                                <div class="mb-3">
+                                    <select class="custom-select" id="customSelect">
+                                        <option value="0">Yoxlanılmayıb</option>
+                                        <option value="1">Yoxlanılıb</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>{{row[14]}}</td>
+                            <td>test</td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+
+{% block custom_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Select all the <select> elements in the table
+        const selectMenus = document.querySelectorAll("tbody select");
+    
+        // Add an event listener to each <select>
+        selectMenus.forEach((select, index) => {
+            select.addEventListener("change", function () {
+                // Get the selected value
+                const selectedValue = this.value;
+    
+                // Prepare the data for the request
+                const requestData = {
+                    id: this.closest("tr").querySelector("th").innerText, // Assuming the ID is in the first column
+                    faculty_name: document.getElementById("faculty_name").innerText, // Assuming the ID is in the first column
+                    status: selectedValue,
+                };
+    
+                // Send the request to the endpoint
+                fetch("/update-status", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token() }}" // CSRF token for Flask-WTF
+                    },
+                    body: JSON.stringify(requestData),
+                })
+                    .then((response) => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error("Failed to update status");
+                        }
+                    })
+                    .then((data) => {
+                        console.log("Update successful:", data);
+                        // Optional: Provide feedback to the user
+                        alert("Status updated successfully!");
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        alert("Failed to update the status.");
+                    });
+            });
+        });
+    });
+    </script>
+    
+<script>
+    // Enable dragging for table rows
+    document.addEventListener('DOMContentLoaded', function () {
+        const table = document.querySelector('.table');
+        let draggingNode = null;
+
+        table.addEventListener('dragstart', function (event) {
+            draggingNode = event.target;
+            event.target.style.opacity = 0.5;
+        });
+
+        table.addEventListener('dragend', function (event) {
+            draggingNode.style.opacity = 1;
+            draggingNode = null;
+        });
+
+        table.addEventListener('dragover', function (event) {
+            event.preventDefault();
+            const targetNode = event.target.closest('tr');
+            if (targetNode && targetNode !== draggingNode) {
+                table.insertBefore(draggingNode, targetNode);
+            }
+        });
+    });
+</script>
+{% endblock %}

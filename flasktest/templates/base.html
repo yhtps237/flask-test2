@@ -16,6 +16,7 @@
             integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
             crossorigin="anonymous">
 
+
         <link rel="stylesheet" type="text/css"
             href="{{ url_for('static', filename='main.css')  }}">
 
@@ -30,6 +31,7 @@
         <!-- <link rel="stylesheet"
             href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"> -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
 
         <link rel="stylesheet"
             href="{{ url_for('static', filename='css/plugins/datatables.min.css')  }}" />
@@ -100,17 +102,13 @@
                                         data-toggle="dropdown"
                                         aria-haspopup="true"
                                         aria-expanded="false">
-                                        Sorğular
+                                        İmtahanlar
                                     </a>
 
                                     <div class="dropdown-menu"
                                         aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item"
-                                            href="{{url_for('empty_topics')}}">Qiymət</a>
-                                        <a class="dropdown-item"
-                                            href="{{url_for('empty_topics')}}">Tarix</a>
-                                        <a class="dropdown-item"
-                                            href="{{url_for('empty_topics')}}">Boş Mövzu</a>
+                                            href="{{url_for('show_exams')}}">Fənnlər</a>
                                     </div>
                                 </li>
                             </ul>

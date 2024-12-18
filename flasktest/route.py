@@ -1,6 +1,17 @@
 from collections import defaultdict
 import datetime
-from flask import Flask, abort, render_template, url_for, request, flash, redirect
+from flask import (
+    Flask,
+    abort,
+    render_template,
+    url_for,
+    request,
+    flash,
+    redirect,
+    jsonify,
+)
+
+import json
 from flasktest.forms import (
     RegistrationForm,
     LoginForm,
@@ -1042,3 +1053,78 @@ async def new_topic_to_delete():
     #         mimetype="application/excel",
     #     )
     return render_template("requests/add_topic_to_delete.html", form=form)
+
+
+@app.route("/exams", methods=["GET"])
+@login_required
+def show_exams():
+    if current_user.faculty_id != 0:
+        return redirect(url_for("index"))
+
+    connection = connect_db(database)
+
+    with connection.cursor() as cursor:
+        query = """SELECT db_name, faculty_name from examsystem.faculty_names"""
+        cursor.execute(query)
+        db_names = cursor.fetchall()
+        # db_names = [i[0] for i in db_names]
+        query = """"""
+
+        for index, (db_name, faculty_name) in enumerate(db_names):
+            temp_query = (
+                f"""SELECT '{faculty_name}', profession_name, {db_name}.course, {db_name}.id,  
+                    {db_name}.subjectName, {db_name}.teacherName, {db_name}.examType, 
+                    {db_name}.subjectClass, {db_name}.isSub, {db_name}.isExamHappend, 
+                    {db_name}.startDate, {db_name}.startTime, dpt.department_name, 
+                    {db_name}.is_checked, {db_name}.phone_number
+                    FROM {db_name}.subjects as {db_name}  
+                    JOIN examsystem.professions as pr ON pr.id={db_name}.profession_id 
+                    LEFT JOIN examsystem.departments as dpt ON dpt.id={db_name}.department_id 
+                    where educationYear='2021/2022' and semestr='PAYIZ' \n"""
+                if index == 0
+                else f"""UNION ALL SELECT '{faculty_name}', profession_name, {db_name}.course, {db_name}.id,  
+                        {db_name}.subjectName, {db_name}.teacherName, {db_name}.examType, 
+                        {db_name}.subjectClass, {db_name}.isSub, {db_name}.isExamHappend, 
+                        {db_name}.startDate, {db_name}.startTime, dpt.department_name, 
+                        {db_name}.is_checked, {db_name}.phone_number 
+                        FROM {db_name}.subjects as {db_name} 
+                        JOIN examsystem.professions as pr ON pr.id={db_name}.profession_id 
+                        LEFT JOIN examsystem.departments as dpt ON dpt.id={db_name}.department_id 
+                        where educationYear='2021/2022' and semestr='PAYIZ'\n"""
+            )
+            query += temp_query
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+    disconnect_db(connection, database)
+
+    return render_template("exams/exams_view.html", results=results)
+
+
+@app.route("/update-status", methods=["POST"])
+def update_status():
+    try:
+        # Get the JSON data from the request
+        data = request.get_json()
+        record_id = data.get("id")
+        faculty_name = data.get("faculty_name")
+        status = data.get("status")
+
+        connection = connect_db(database)
+
+        with connection.cursor() as cursor:
+            query = f"""SELECT db_name from examsystem.faculty_names where faculty_name='{faculty_name}'"""
+            cursor.execute(query)
+            db_name = cursor.fetchall()[0][0]
+            query = f"""UPDATE {db_name}.subjects SET is_checked={status} where id={record_id}"""
+            print(query)
+            cursor.execute(query)
+            connection.commit()
+
+        disconnect_db(connection, database)
+
+        return jsonify({"message": "Status updated successfully!"})
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"error": "An error occurred while updating the status."}), 500
