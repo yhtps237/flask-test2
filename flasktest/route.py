@@ -1081,7 +1081,7 @@ def show_exams():
                     FROM {db_name}.subjects as {db_name}  
                     JOIN examsystem.professions as pr ON pr.id={db_name}.profession_id 
                     LEFT JOIN examsystem.departments as dpt ON dpt.id={db_name}.department_id 
-                    where educationYear='2021/2022' and semestr='PAYIZ' \n"""
+                    where educationYear='2024/2025' and semestr='PAYIZ' \n"""
                 if index == 0
                 else f"""UNION ALL SELECT '{faculty_name}', profession_name, {db_name}.course, {db_name}.id,  
                         {db_name}.subjectName, {db_name}.teacherName, {db_name}.examType, 
@@ -1091,7 +1091,7 @@ def show_exams():
                         FROM {db_name}.subjects as {db_name} 
                         JOIN examsystem.professions as pr ON pr.id={db_name}.profession_id 
                         LEFT JOIN examsystem.departments as dpt ON dpt.id={db_name}.department_id 
-                        where educationYear='2021/2022' and semestr='PAYIZ'\n"""
+                        where educationYear='2024/2025' and semestr='PAYIZ'\n"""
             )
             query += temp_query
         cursor.execute(query)
