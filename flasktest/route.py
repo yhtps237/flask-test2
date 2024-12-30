@@ -34,6 +34,7 @@ import os
 import io
 import asyncio
 from flasktest.modules.module import Contingent, Ejurnal, MovementReport, Students
+import pandas as pd
 
 # from flask_bcrypt import generate_password_hash
 
@@ -1097,6 +1098,37 @@ def show_exams():
         results = cursor.fetchall()
 
     disconnect_db(connection, database)
+
+    if request.args.get("export") == "True":
+        # report_obj = MovementReport(results, current_user.faculty_id)
+
+        # report_obj.save("report")
+        columns = [
+            "Fakültə adı",
+            "İxtisas adı",
+            "Kurs",
+            "ID",
+            "Fənn",
+            "Müəllim",
+            "İmtahan növü",
+            "Qrub",
+            "Alt/qrup",
+            "İmtahan olub",
+            "Tarix",
+            "Saat",
+            "Kafedra adı",
+            "Yoxlanılıb",
+            "Telefon",
+        ]
+        dataframe = pd.DataFrame(data=results, columns=columns)
+        dataframe.to_excel("excel-files/exams.xlsx", index=False)
+        # print(dataframe)
+        return send_file(
+            "../excel-files/exams.xlsx",
+            as_attachment=True,
+            download_name="report.xlsx",
+            mimetype="application/excel",
+        )
 
     return render_template("exams/exams_view.html", results=results)
 
