@@ -679,7 +679,7 @@ def add_student_phone_number():
                 connection.commit()
             disconnect_db(connection, database)
 
-            flash("Uğurla əlavə edildi.", "success")
+            # flash("Uğurla əlavə edildi.", "success")
             # return redirect(request.url)
             return redirect(request.referrer or url_for("add_student_phone_number"))
         # else:

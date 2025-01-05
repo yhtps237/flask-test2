@@ -50,7 +50,6 @@
         <title>NDU ReportLab</title>
         {% endif %}
 
-        {% block custom_css %}{% endblock %}
     </head>
     <body>
 
@@ -69,6 +68,7 @@
                                 {% endfor %}
                                 {% endif %}
                                 {% endwith %}
+
                             {{ form.hidden_tag() }}
                             <fieldset class="form-group">
                                 <div class="form-group">
