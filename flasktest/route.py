@@ -684,7 +684,7 @@ def add_student_phone_number():
             return redirect(request.referrer or url_for("add_student_phone_number"))
         # else:
         #     print(form.errors)
-    return render_template("student_number.html", title="Tələbə", form=form)
+    return render_template("student_number2.html", title="Tələbə", form=form)
 
 
 @app.route("/delete-movement/<int:pk>", methods=["GET"])
