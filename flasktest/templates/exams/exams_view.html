@@ -135,7 +135,17 @@
                                 </div>
                             </td>
                             <td>{{row[14]}}</td>
-                            <td>test</td>
+                            <td>
+
+                                <form id="messageForm" class="p-3 bg-light rounded shadow-sm">
+                                    <input type="hidden" name="subject_name" value="{{row[4]}}">
+                                    <input type="hidden" name="teacher_name" value="{{row[5]}}">
+                                    <input type="hidden" name="phone_number" value="{{row[14]}}">
+                                    <input type="hidden" name="date" value="{{row[10]}}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="button" id="sendMessageBtn" class="btn btn-primary send-btn">Mesaj göndər</button>
+                                </form>
+                            </td>
                         </tr>
                         {% endif %}
                         {% endfor %}
@@ -150,6 +160,16 @@
 
 
 {% block custom_js %}
+
+<!-- <script>
+    $(document).ready(function() {
+        const table = $('#subjects-table').DataTable();
+
+        table.on('draw', function() {
+            htmx.process(document.body); // Reinitialize HTMX
+        });
+    });
+</script> -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         // Select all the <select> elements in the table
@@ -197,6 +217,37 @@
         });
     });
     </script>
+
+<script>
+    document.querySelectorAll(".send-btn").forEach(function (button) {
+    button.addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const form = this.closest("form");
+        const formData = new FormData(form);
+        const csrfToken = form.querySelector('[name="csrf_token"]').value;
+
+        fetch("/exams", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrfToken // Include CSRF token in headers
+            },
+            body: formData,
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error("Error:", error));
+    });
+});
+
+
+</script>
     
 <script>
     // Enable dragging for table rows

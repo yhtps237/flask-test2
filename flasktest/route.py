@@ -22,7 +22,7 @@ from flasktest.forms import (
     DeleteTopicForm,
 )
 from flasktest.models import User
-from flasktest.database import database, connect_db, disconnect_db
+from flasktest.database import database, connect_db, disconnect_db, load_config
 from flasktest import app, db
 from flasktest import bcrypt
 from flask_login import login_user, login_required, current_user, logout_user
@@ -35,6 +35,7 @@ import io
 import asyncio
 from flasktest.modules.module import Contingent, Ejurnal, MovementReport, Students
 import pandas as pd
+from .helpers import check_whatsapp_exists, send_message
 
 # from flask_bcrypt import generate_password_hash
 
@@ -1056,11 +1057,61 @@ async def new_topic_to_delete():
     return render_template("requests/add_topic_to_delete.html", form=form)
 
 
-@app.route("/exams", methods=["GET"])
+@app.route("/exams", methods=["GET", "POST"])
 @login_required
 def show_exams():
     if current_user.faculty_id != 0:
         return redirect(url_for("index"))
+
+    if request.method == "POST":
+        try:
+            # Extract data from the form
+            subject_name = request.form.get("subject_name")
+            teacher_name = request.form.get("teacher_name")
+            phone_number = request.form.get("phone_number")
+            date = request.form.get("date")
+            if phone_number == "None":
+                return (
+                    jsonify(
+                        {"success": False, "message": "Telefon nömrəsi tapılmadı."}
+                    ),
+                    500,
+                )
+            # Log or process the data (replace this with your desired action)
+            print(
+                f"Subject: {subject_name}, Teacher: {teacher_name}, Phone: {phone_number}, Date: {date}"
+            )
+            config = load_config()
+            waInstance = config["waInstance"]
+            apiTokenInstance = config["apiTokenInstance"]
+            whatsapp_check = check_whatsapp_exists(
+                waInstance, apiTokenInstance, phone_number
+            )
+            if not whatsapp_check:
+                return (
+                    jsonify(
+                        {
+                            "success": False,
+                            "message": "Verilmiş nömrə WhatsApp qeydiyyatında deyil.",
+                        }
+                    ),
+                    500,
+                )
+            msg = f"""Hörmətli {teacher_name}. Sizin {date} tarixdə keçirilmiş "{subject_name}" imtahanınız imtahan vərəqələri yoxlanmaq üçün hazırdır. Yoxlamaq üçün əsas binaya dəvət olunursunuz.
+                    """
+            status = send_message(waInstance, apiTokenInstance, phone_number, msg)
+            if status:
+                return jsonify({"success": True, "message": "Mesaj uğurla göndərildi!"})
+            return jsonify(
+                {"success": False, "message": "Mesaj göndərilən zaman xəta baş verdi!"}
+            )
+
+        except Exception as e:
+            print(f"Error: {str(e)}")
+            return (
+                jsonify({"success": False, "message": "Mesaj göndərilə bilmədi."}),
+                500,
+            )
 
     connection = connect_db(database)
 

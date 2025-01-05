@@ -5,6 +5,8 @@
         "username": "orion",
         "password": "orion"
     },
+    "waInstance": "7103171157",
+    "apiTokenInstance": "35ffa7961cbd4cb891a1f92860495f7316e53802337d427eb6",
     "host": "localhost",
     "port": 3306,
     "ssh_host": "192.168.40.42",
