@@ -562,7 +562,7 @@ def edit_account(pk):
 
 
 @app.route("/student-registration", methods=["GET", "POST"])
-@login_required
+# @login_required
 def add_student_phone_number():
     form = StudentPhoneNumber()
 
