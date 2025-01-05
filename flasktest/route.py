@@ -1097,7 +1097,7 @@ def show_exams():
                     ),
                     500,
                 )
-            msg = f"""Hörmətli {teacher_name}. Sizin {date} tarixdə keçirilmiş "{subject_name}" imtahanınız imtahan vərəqələri yoxlanmaq üçün hazırdır. Yoxlamaq üçün əsas binaya dəvət olunursunuz.
+            msg = f"""Hörmətli {teacher_name}. Sizin {date} tarixdə keçirilmiş "{subject_name}" imtahanınız imtahan vərəqələri yoxlanmaq üçün hazırdır. Yoxlamaq üçün müvafiq təhsil müəssisəsinə dəvət olunursunuz.
                     """
             status = send_message(waInstance, apiTokenInstance, phone_number, msg)
             if status:
