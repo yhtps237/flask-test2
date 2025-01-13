@@ -1132,7 +1132,7 @@ def show_exams():
                     FROM {db_name}.subjects as {db_name}  
                     JOIN examsystem.professions as pr ON pr.id={db_name}.profession_id 
                     LEFT JOIN examsystem.departments as dpt ON dpt.id={db_name}.department_id 
-                    where educationYear='2024/2025' and semestr='PAYIZ' and examType='Yazılı' \n"""
+                    where educationYear='2023/2024' and semestr='PAYIZ' and examType='Yazılı' \n"""
                 if index == 0
                 else f"""UNION ALL SELECT '{faculty_name}', profession_name, {db_name}.course, {db_name}.id,  
                         {db_name}.subjectName, {db_name}.teacherName, {db_name}.examType, 
@@ -1142,7 +1142,7 @@ def show_exams():
                         FROM {db_name}.subjects as {db_name} 
                         JOIN examsystem.professions as pr ON pr.id={db_name}.profession_id 
                         LEFT JOIN examsystem.departments as dpt ON dpt.id={db_name}.department_id 
-                        where educationYear='2024/2025' and semestr='PAYIZ' and examType='Yazılı'\n"""
+                        where educationYear='2023/2024' and semestr='PAYIZ' and examType='Yazılı'\n"""
             )
             query += temp_query
         cursor.execute(query)
@@ -1182,6 +1182,54 @@ def show_exams():
         )
 
     return render_template("exams/exams_view.html", results=results)
+
+
+@app.route("/edit-phone-number/", methods=["GET", "POST"])
+@login_required
+def edit_phone_number():
+    if current_user.faculty_id != 0:
+        return redirect(url_for("index"))
+
+    if request.method == "POST":
+        row_id = request.form.get("id")
+        db_name = request.form.get("db_name")
+        phone = request.form.get("phone")
+
+        if not phone or not id or not db_name:
+            return (
+                jsonify({"success": False, "message": "All fields are required"}),
+                400,
+            )
+
+        connection = connect_db(database)
+        with connection.cursor() as cursor:
+
+            query = f"""UPDATE {db_name}.subjects SET phone_number='{phone}' where id={row_id}"""
+            cursor.execute(query)
+            connection.commit()
+
+        disconnect_db(connection, database)
+        flash("Uğurla yerinə yetirildi!", "success")
+        return redirect(request.referrer)
+
+    row_id = request.args.get("row_id")
+    faculty_name = request.args.get("faculty_name")
+    connection = connect_db(database)
+
+    with connection.cursor() as cursor:
+        query = f"""SELECT db_name from examsystem.faculty_names where faculty_name='{faculty_name}'"""
+        cursor.execute(query)
+        db_name = cursor.fetchall()[0][0]
+
+        query = f"""SELECT id, subjectName, teacherName, phone_number from {db_name}.subjects where id={row_id}"""
+        cursor.execute(query)
+        result = cursor.fetchone()
+
+    disconnect_db(connection, database)
+    print(result)
+    return render_template(
+        "exams/edit_phone_number.html", result=result, db_name=db_name
+    )
 
 
 @app.route("/update-status", methods=["POST"])
