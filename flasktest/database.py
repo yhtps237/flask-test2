@@ -105,7 +105,7 @@ class Database:
             "nduinfo_musiqikolleci": "Müsuqi Kolleci",
         }
         result = [
-            (item[0], converter[item[0]])
+            (item[0], converter.get(item[0], ""))
             for item in result
             if item[0] not in filter_out
         ]
