@@ -102,6 +102,7 @@ class Database:
             "nduinfo_incesenet": "İncəsənət",
             "nduinfo_tibbkolleci": "Tibb Kolleci",
             "nduinfo_texnikikollec": "Texniki Kollec",
+            "nduinfo_musiqikolleci": "Müsuqi Kolleci",
         }
         result = [
             (item[0], converter[item[0]])
